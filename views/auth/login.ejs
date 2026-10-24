@@ -1,0 +1,1179 @@
+<%- include('../partials/head') %>
+
+<div class="cspc-login-page">
+
+  <!-- =====================================================
+       LEFT SIDE - CAMPUS
+       ===================================================== -->
+  <section class="cspc-login-left">
+
+    <div class="cspc-campus-image"></div>
+
+    <div class="cspc-campus-overlay"></div>
+
+    <!-- School heading -->
+    <div class="cspc-school-heading">
+
+      <img
+        src="/images/cspc-logo.png"
+        alt="Camarines Sur Polytechnic College Logo"
+        class="cspc-small-logo"
+      >
+
+      <div>
+        <h2>Camarines Sur</h2>
+        <h2>Polytechnic College</h2>
+        <p>Nabua, Camarines Sur</p>
+      </div>
+
+    </div>
+
+
+    <!-- Found IT! information at bottom -->
+    <div class="cspc-foundit-info">
+
+      <div class="cspc-foundit-brand">
+
+        <div class="cspc-foundit-icon">
+          ⌖
+        </div>
+
+        <div>
+          <h1>Found IT!</h1>
+          <p>LOST &amp; FOUND SYSTEM</p>
+        </div>
+
+      </div>
+
+
+      <div class="cspc-feature-row">
+
+        <div class="cspc-feature">
+          <div class="cspc-feature-icon">✓</div>
+
+          <div>
+            <strong>Help bring</strong>
+            <span>lost items back<br>to their owners.</span>
+          </div>
+        </div>
+
+
+        <div class="cspc-feature">
+          <div class="cspc-feature-icon">●</div>
+
+          <div>
+            <strong>Keep our campus</strong>
+            <span>safe and<br>organized.</span>
+          </div>
+        </div>
+
+
+        <div class="cspc-feature">
+          <div class="cspc-feature-icon">♥</div>
+
+          <div>
+            <strong>Because every</strong>
+            <span>item has a story.</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       RIGHT SIDE - LOGIN
+       ===================================================== -->
+  <section class="cspc-login-right">
+
+    <div class="cspc-login-card">
+
+      <!-- Logo -->
+      <div class="cspc-login-logo-wrap">
+
+        <img
+          src="/images/cspc-logo.png"
+          alt="Camarines Sur Polytechnic College"
+          class="cspc-login-logo"
+        >
+
+      </div>
+
+
+      <!-- Heading -->
+      <div class="cspc-login-heading">
+
+        <h1>Welcome Back</h1>
+
+        <p>Login to Found IT!</p>
+
+      </div>
+
+
+      <!-- Existing flash messages -->
+      <div class="cspc-login-flash">
+        <%- include('../partials/flash') %>
+      </div>
+
+
+      <!-- =================================================
+           LOGIN FORM
+           ================================================= -->
+      <form
+        method="post"
+        action="/login"
+        class="cspc-login-form"
+        novalidate
+      >
+
+        <!-- Keep this because auth.js uses it -->
+        <input
+          type="hidden"
+          name="next"
+          value="<%= next %>"
+        >
+
+
+        <!-- EMAIL -->
+        <div class="cspc-field">
+
+          <label for="email">
+            Email Address
+          </label>
+
+          <div class="cspc-input-wrap">
+
+            <span class="cspc-input-icon">
+              ✉
+            </span>
+
+            <input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="yourname@my.cspc.edu.ph"
+              autocomplete="email"
+              required
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- PASSWORD -->
+        <div class="cspc-field">
+
+          <label for="password">
+            Password
+          </label>
+
+          <div class="cspc-input-wrap">
+
+            <span class="cspc-input-icon">
+              🔒
+            </span>
+
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              
+              autocomplete="current-password"
+              required
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- Forgot password -->
+        <div class="cspc-forgot">
+
+          <a href="/help">
+            Forgot Password?
+          </a>
+
+        </div>
+
+
+        <!-- LOGIN BUTTON -->
+        <button
+          type="submit"
+          class="cspc-login-button"
+        >
+          <span>Login</span>
+          <span class="cspc-login-arrow">→</span>
+        </button>
+
+      </form>
+
+
+      <!-- Divider -->
+      <div class="cspc-divider">
+
+        <span></span>
+
+        <small>or</small>
+
+        <span></span>
+
+      </div>
+
+
+      <!-- Register -->
+      <p class="cspc-register">
+
+        Don't have an account?
+
+        <a href="/signup">
+          Register now
+        </a>
+
+      </p>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<style>
+/* =========================================================
+   CSPC FOUND-IT LOGIN
+   RESPONSIVE VERSION
+   Designed to work at 1280x800 without browser zoom
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   MAIN PAGE
+   ========================================================= */
+
+.cspc-login-page {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  display: grid;
+  grid-template-columns: minmax(0, 56%) minmax(420px, 44%);
+
+  background: #f7faff;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   LEFT SIDE
+   ========================================================= */
+
+.cspc-login-left {
+  position: relative;
+
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  overflow: hidden;
+
+  color: #fff;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+.cspc-campus-image {
+  position: absolute;
+  inset: 0;
+
+  background-image: url('/images/cspcCampus2.jpg');
+
+  background-size: cover;
+  background-position: center;
+
+  transform: scale(1.01);
+}
+
+
+.cspc-campus-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(0, 35, 90, 0) 40%,
+      rgba(0, 25, 75, 0) 100%
+    );
+}
+
+
+/* =========================================================
+   SCHOOL HEADING
+   ========================================================= */
+
+.cspc-school-heading {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+
+  gap: clamp(10px, 1.3vw, 16px);
+
+  padding:
+    clamp(24px, 4vh, 42px)
+    clamp(24px, 3.5vw, 48px)
+    0;
+}
+
+
+.cspc-small-logo {
+  width: clamp(55px, 5.5vw, 78px);
+  height: clamp(55px, 5.5vw, 78px);
+
+  flex-shrink: 0;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+}
+
+
+.cspc-school-heading h2 {
+  margin: 0;
+
+  color: #091041;
+
+  font-size: clamp(18px, 2vw, 32px);
+
+  line-height: 1.05;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: -0.02em;
+
+  font-family: Georgia, "Times New Roman", serif;
+  
+}
+
+
+.cspc-school-heading p {
+  margin: 8px 0 0;
+
+  color: rgba(255, 255, 255, 0.92);
+
+  font-size: clamp(12px, 1vw, 15px);
+
+  font-style: italic;
+}
+
+
+/* =========================================================
+   FOUND-IT INFORMATION
+   ========================================================= */
+
+.cspc-foundit-info {
+  position: relative;
+  z-index: 2;
+
+  padding:
+    clamp(22px, 3vh, 30px)
+    clamp(24px, 3.5vw, 48px)
+    clamp(25px, 4vh, 40px);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 63, 145, 0) 0%,
+      rgba(0, 48, 112, 0.88) 35%,
+      rgba(0, 38, 95, 0.97) 100%
+    );
+}
+
+
+.cspc-foundit-brand {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: clamp(18px, 3vh, 28px);
+}
+
+
+.cspc-foundit-icon {
+  width: clamp(45px, 4vw, 58px);
+  height: clamp(45px, 4vw, 58px);
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.16);
+
+  border: 2px solid rgba(255, 255, 255, 0.9);
+
+  font-size: clamp(24px, 2vw, 31px);
+}
+
+
+.cspc-foundit-brand h1 {
+  margin: 0;
+
+  color: #fff;
+
+  font-size: clamp(25px, 2.4vw, 32px);
+
+  line-height: 1;
+
+  font-weight: 800;
+}
+
+
+.cspc-foundit-brand p {
+  margin: 5px 0 0;
+
+  color: rgba(255, 255, 255, 0.9);
+
+  font-size: clamp(9px, 0.9vw, 12px);
+
+  letter-spacing: 0.12em;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   FEATURES
+   ========================================================= */
+
+.cspc-feature-row {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: clamp(12px, 2vw, 26px);
+}
+
+
+.cspc-feature {
+  min-width: 0;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+}
+
+
+.cspc-feature-icon {
+  flex: 0 0 auto;
+
+  width: clamp(32px, 3vw, 40px);
+  height: clamp(32px, 3vw, 40px);
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #fff;
+
+  color: #0754bd;
+
+  font-size: 16px;
+
+  font-weight: 800;
+}
+
+
+.cspc-feature strong {
+  display: block;
+
+  color: #fff;
+
+  font-size: clamp(10px, 1vw, 13px);
+
+  line-height: 1.2;
+}
+
+
+.cspc-feature span {
+  display: block;
+
+  color: rgba(255, 255, 255, 0.82);
+
+  font-size: clamp(9px, 0.9vw, 12px);
+
+  line-height: 1.3;
+
+  margin-top: 3px;
+}
+
+
+/* =========================================================
+   RIGHT SIDE
+   ========================================================= */
+
+.cspc-login-right {
+  position: relative;
+
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    clamp(18px, 4vw, 48px);
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(24, 102, 220, 0.15),
+      transparent 38%
+    ),
+    #f7faff;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   DECORATIVE CIRCLES
+   ========================================================= */
+
+.cspc-login-right::before {
+  content: "";
+
+  position: absolute;
+
+  top: -180px;
+  right: -180px;
+
+  width: 400px;
+  height: 400px;
+
+  border-radius: 50%;
+
+  background: #0754bd;
+
+  opacity: 0.10;
+}
+
+
+.cspc-login-right::after {
+  content: "";
+
+  position: absolute;
+
+  bottom: -230px;
+  right: -170px;
+
+  width: 450px;
+  height: 450px;
+
+  border-radius: 50%;
+
+  border: 35px solid rgba(7, 84, 189, 0.10);
+}
+
+
+/* =========================================================
+   LOGIN CARD
+   ========================================================= */
+
+.cspc-login-card {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+
+  /*
+     IMPORTANT:
+     The card can never become wider than the available
+     right-side area.
+  */
+  max-width: 550px;
+
+  max-height: calc(100dvh - 40px);
+
+  overflow-y: auto;
+
+  padding:
+    clamp(24px, 3.2vw, 44px)
+    clamp(22px, 3.2vw, 46px);
+
+  background: rgba(255, 255, 255, 0.98);
+
+  border-radius: clamp(18px, 2vw, 24px);
+
+  box-shadow:
+    0 20px 60px rgba(16, 59, 112, 0.13);
+
+  border: 1px solid rgba(16, 73, 140, 0.08);
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.cspc-login-logo-wrap {
+  display: flex;
+
+  justify-content: center;
+
+  margin-bottom: clamp(10px, 2vh, 17px);
+}
+
+
+.cspc-login-logo {
+  width: clamp(70px, 7vw, 105px);
+  height: clamp(70px, 7vw, 105px);
+
+  object-fit: contain;
+}
+
+
+/* =========================================================
+   HEADING
+   ========================================================= */
+
+.cspc-login-heading {
+  text-align: center;
+
+  margin-bottom: clamp(20px, 3vh, 32px);
+}
+
+
+.cspc-login-heading h1 {
+  margin: 0;
+
+  color: #0754bd;
+
+  font-size: clamp(29px, 3vw, 43px);
+
+  line-height: 1.1;
+
+  font-weight: 800;
+
+  letter-spacing: -0.03em;
+}
+
+
+.cspc-login-heading p {
+  margin: 6px 0 0;
+
+  color: #61779a;
+
+  font-size: clamp(16px, 1.5vw, 20px);
+
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   FLASH
+   ========================================================= */
+
+.cspc-login-flash {
+  margin-bottom: 10px;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.cspc-field {
+  margin-bottom: clamp(13px, 2vh, 19px);
+}
+
+
+.cspc-field label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #17365f;
+
+  font-size: 14px;
+
+  font-weight: 700;
+}
+
+
+.cspc-input-wrap {
+  position: relative;
+
+  width: 100%;
+}
+
+
+.cspc-input-icon {
+  position: absolute;
+
+  left: 17px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #7187a6;
+
+  font-size: 18px;
+
+  z-index: 1;
+}
+
+
+.cspc-input-wrap input {
+  width: 100%;
+
+  height: clamp(50px, 7vh, 62px);
+
+  padding:
+    0
+    17px
+    0
+    51px;
+
+  border: 1.5px solid #d5e0ef;
+
+  border-radius: 14px;
+
+  background: #fff;
+
+  color: #17365f;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.cspc-input-wrap input::placeholder {
+  color: #91a2bb;
+}
+
+
+.cspc-input-wrap input:focus {
+  border-color: #0754bd;
+
+  box-shadow:
+    0 0 0 4px rgba(7, 84, 189, 0.10);
+}
+
+
+/* =========================================================
+   FORGOT PASSWORD
+   ========================================================= */
+
+.cspc-forgot {
+  text-align: right;
+
+  margin-top: -3px;
+
+  margin-bottom: clamp(16px, 2.5vh, 25px);
+}
+
+
+.cspc-forgot a {
+  color: #0754bd;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+
+.cspc-forgot a:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+   ========================================================= */
+
+.cspc-login-button {
+  width: 100%;
+
+  height: clamp(50px, 7vh, 62px);
+
+  border: none;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0754bd,
+      #126fe0
+    );
+
+  color: #fff;
+
+  font-size: clamp(16px, 1.4vw, 18px);
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 11px;
+
+  box-shadow:
+    0 9px 22px rgba(7, 84, 189, 0.22);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+
+.cspc-login-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 13px 28px rgba(7, 84, 189, 0.27);
+}
+
+
+.cspc-login-button:active {
+  transform: translateY(0);
+}
+
+
+.cspc-login-arrow {
+  font-size: 21px;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.cspc-divider {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin:
+    clamp(18px, 2.5vh, 29px)
+    0
+    clamp(17px, 2.5vh, 25px);
+}
+
+
+.cspc-divider span {
+  flex: 1;
+
+  height: 1px;
+
+  background: #dce5f0;
+}
+
+
+.cspc-divider small {
+  color: #7c8da6;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   REGISTER
+   ========================================================= */
+
+.cspc-register {
+  margin: 0;
+
+  text-align: center;
+
+  color: #70819a;
+
+  font-size: 14px;
+}
+
+
+.cspc-register a {
+  color: #0754bd;
+
+  font-weight: 700;
+
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   1280 × 800 LAPTOP
+   ========================================================= */
+
+@media (max-width: 1300px) and (min-height: 700px) {
+
+  .cspc-login-page {
+    grid-template-columns: 55% 45%;
+  }
+
+  .cspc-login-right {
+    padding: 25px;
+  }
+
+  .cspc-login-card {
+    max-width: 500px;
+
+    padding: 28px 32px;
+  }
+
+  .cspc-login-logo {
+    width: 75px;
+    height: 75px;
+  }
+
+  .cspc-login-heading {
+    margin-bottom: 22px;
+  }
+
+  .cspc-login-heading h1 {
+    font-size: 32px;
+  }
+
+  .cspc-login-heading p {
+    font-size: 17px;
+  }
+
+  .cspc-input-wrap input {
+    height: 52px;
+  }
+
+  .cspc-login-button {
+    height: 52px;
+  }
+
+}
+
+
+/* =========================================================
+   SHORT SCREENS
+   Example: 1280 × 720 / 1366 × 768
+   ========================================================= */
+
+@media (max-height: 700px) and (min-width: 801px) {
+
+  .cspc-login-page {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    grid-template-columns: minmax(0, 55%) minmax(0, 45%);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .cspc-login-left,
+  .cspc-login-right {
+    min-height: 0;
+  }
+
+  .cspc-login-right {
+    padding: 12px;
+  }
+
+  .cspc-login-logo-wrap {
+    display: none;
+  }
+
+  .cspc-login-card {
+    max-height: calc(100dvh - 24px);
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .cspc-login-logo {
+    width: 62px;
+    height: 62px;
+  }
+
+  .cspc-login-logo-wrap {
+    margin-bottom: 7px;
+  }
+
+  .cspc-login-heading {
+    margin-bottom: 15px;
+  }
+
+  .cspc-login-heading h1 {
+    font-size: 29px;
+  }
+
+  .cspc-login-heading p {
+    font-size: 15px;
+  }
+
+  .cspc-field {
+    margin-bottom: 11px;
+  }
+
+  .cspc-input-wrap input {
+    height: 46px;
+  }
+
+  .cspc-forgot {
+    margin-bottom: 14px;
+  }
+
+  .cspc-login-button {
+    height: 46px;
+  }
+
+  .cspc-divider {
+    margin-top: 15px;
+    margin-bottom: 13px;
+  }
+
+}
+
+
+/* =========================================================
+   TABLET / SMALL LAPTOP
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+  .cspc-login-page {
+    display: block;
+  }
+
+  .cspc-login-left {
+    min-height: 390px;
+    height: 390px;
+  }
+
+  .cspc-login-right {
+    min-height: auto;
+
+    padding:
+      35px
+      20px
+      50px;
+  }
+
+  .cspc-school-heading {
+    padding-top: 25px;
+  }
+
+  .cspc-feature-row {
+    display: none;
+  }
+
+}
+
+
+/* =========================================================
+   PHONE
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+  .cspc-login-left {
+    min-height: 320px;
+    height: 320px;
+  }
+
+  .cspc-school-heading {
+    padding: 20px;
+
+    gap: 10px;
+  }
+
+  .cspc-small-logo {
+    width: 52px;
+    height: 52px;
+  }
+
+  .cspc-school-heading h2 {
+    font-size: 16px;
+  }
+
+  .cspc-school-heading p {
+    font-size: 11px;
+  }
+
+  .cspc-foundit-info {
+    padding: 18px 20px;
+  }
+
+  .cspc-foundit-brand h1 {
+    font-size: 25px;
+  }
+
+  .cspc-login-right {
+    padding: 20px 14px 35px;
+  }
+
+  .cspc-login-card {
+    padding: 28px 20px;
+
+    border-radius: 20px;
+  }
+
+  .cspc-login-logo {
+    width: 80px;
+    height: 80px;
+  }
+
+  .cspc-login-heading h1 {
+    font-size: 30px;
+  }
+
+  .cspc-login-heading p {
+    font-size: 16px;
+  }
+
+}
+</style>
+
+
+<script src="/js/enhance.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<section class="campus-page-hero">
+  <div class="container">
+    <span class="campus-page-kicker">CSPC · ACCESS CONTROL</span>
+    <h1>Permission required</h1>
+    <p>This area is reserved for an authorized campus account.</p>
+  </div>
+</section>
+<section class="section campus-interior-section">
+  <div class="container narrow">
+    <div class="campus-copy-panel"><p><%= typeof message !== 'undefined' ? message : "You don't have permission to view that page." %></p></div>
+    <a class="btn btn-dark" href="/">Back home</a>
+  </div>
+</section>
+<%- include('../partials/foot') %>

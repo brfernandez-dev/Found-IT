@@ -1,0 +1,25 @@
+<%# "Online now": logged-in users only; filled in by middleware/activity.js %>
+<% if (typeof onlineUsers !== 'undefined' && currentUser && onlineUsers.length) { %>
+<section class="online-panel" aria-labelledby="online-title">
+  <div class="online-head">
+    <h2 id="online-title"><span class="online-dot" aria-hidden="true"></span>Online now <span class="online-count"><%= onlineCount %></span></h2>
+    <p class="muted">Active in the last 5 minutes</p>
+  </div>
+  <ul class="online-list">
+    <% onlineUsers.forEach(function (u) { %>
+      <li class="online-chip">
+        <% if (u.profile_image) { %>
+          <img class="online-avatar" src="<%= u.profile_image %>" alt="" loading="lazy">
+        <% } else { %>
+          <span class="online-avatar" aria-hidden="true"><%= String(u.display_name || '?').trim().charAt(0).toUpperCase() %></span>
+        <% } %>
+        <span class="online-name"><%= u.display_name %><% if (String(u.id) === String(currentUser.id)) { %> <em>(you)</em><% } %></span>
+        <% if (u.role === 'staff') { %><span class="online-role">Staff</span><% } %>
+      </li>
+    <% }); %>
+  </ul>
+  <% if (onlineCount > onlineUsers.length) { %>
+    <p class="muted online-more">+<%= onlineCount - onlineUsers.length %> more online</p>
+  <% } %>
+</section>
+<% } %>

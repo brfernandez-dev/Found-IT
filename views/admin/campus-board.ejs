@@ -1,0 +1,374 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+<%- include('partials/flash') %>
+
+
+
+
+<main class="admin-content admin-page">
+
+  <!-- =========================
+       STATISTICS
+       ========================= -->
+
+  <div class="admin-stats" aria-label="Report totals">
+
+    <div class="admin-stat">
+      <span
+        class="admin-stat-icon admin-stat-icon-all"
+        aria-hidden="true"
+      >
+        ▦
+      </span>
+
+      <span>All reports</span>
+
+      <strong>
+        <%= counts.total %>
+      </strong>
+    </div>
+
+
+    <div class="admin-stat">
+      <span
+        class="admin-stat-icon admin-stat-icon-lost"
+        aria-hidden="true"
+      >
+        ⌕
+      </span>
+
+      <span>Lost items</span>
+
+      <strong>
+        <%= counts.lost %>
+      </strong>
+    </div>
+
+
+    <div class="admin-stat">
+      <span
+        class="admin-stat-icon admin-stat-icon-found"
+        aria-hidden="true"
+      >
+        ＋
+      </span>
+
+      <span>Found items</span>
+
+      <strong>
+        <%= counts.found %>
+      </strong>
+    </div>
+
+
+    <div class="admin-stat">
+      <span
+        class="admin-stat-icon admin-stat-icon-returned"
+        aria-hidden="true"
+      >
+        ✓
+      </span>
+
+      <span>Returned</span>
+
+      <strong>
+        <%= counts.returned %>
+      </strong>
+    </div>
+
+  </div>
+
+
+  <div class="status-chips" aria-label="Reports by status">
+    <a class="status-chip tag tag-unclaimed" href="/admin/campus-board?status=unclaimed">Unclaimed <strong><%= counts.unclaimed %></strong></a>
+    <a class="status-chip tag tag-claim_pending" href="/admin/campus-board?status=claim_pending">Pending <strong><%= counts.pending %></strong></a>
+    <a class="status-chip tag tag-claimed" href="/admin/campus-board?status=claimed">Claimed <strong><%= counts.claimed %></strong></a>
+    <a class="status-chip tag tag-returned" href="/admin/campus-board?status=returned">Returned <strong><%= counts.returned %></strong></a>
+    <% if (awaitingReview > 0) { %>
+      <a class="status-chip tag tag-review" href="/notifications#pending-reports">Awaiting approval <strong><%= awaitingReview %></strong></a>
+    <% } %>
+  </div>
+
+  <%- include('partials/online-users') %>
+
+  <!-- =========================
+       FILTERS
+       ========================= -->
+
+  <form
+    class="admin-filters"
+    method="GET"
+    action="/admin/campus-board"
+  >
+
+    <label>
+      Search reports
+
+      <input
+        type="search"
+        name="q"
+        value="<%= filters.q || '' %>"
+        placeholder="Title, reference, or reporter"
+      >
+    </label>
+
+
+    <label>
+      Report type
+
+      <select name="type">
+
+        <option value="">
+          All types
+        </option>
+
+        <option
+          value="lost"
+          <%= filters.type === 'lost' ? 'selected' : '' %>
+        >
+          Lost
+        </option>
+
+        <option
+          value="found"
+          <%= filters.type === 'found' ? 'selected' : '' %>
+        >
+          Found
+        </option>
+
+      </select>
+    </label>
+
+
+    <label>
+      Status
+
+      <select name="status">
+
+        <option value="">
+          All statuses
+        </option>
+
+        <% statuses.forEach(function(status) { %>
+
+          <option
+            value="<%= status %>"
+            <%= filters.status === status ? 'selected' : '' %>
+          >
+            <%= statusLabel(status) %>
+          </option>
+
+        <% }); %>
+
+      </select>
+    </label>
+
+
+    <label>
+      Category
+
+      <select name="category">
+        <option value="">All categories</option>
+        <% categories.forEach(function(category) { %>
+          <option value="<%= category %>" <%= filters.category === category ? 'selected' : '' %>><%= category %></option>
+        <% }); %>
+      </select>
+    </label>
+
+    <div class="admin-filter-actions">
+
+      <button
+        class="btn btn-primary"
+        type="submit"
+      >
+        Apply filters
+      </button>
+
+      <a
+        class="btn btn-ghost"
+        href="/admin/campus-board"
+      >
+        Clear
+      </a>
+
+    </div>
+
+  </form>
+
+
+  <!-- =========================
+       LIST HEADER
+       ========================= -->
+
+  <div class="admin-list-heading">
+
+    <h2>
+      Item reports
+    </h2>
+
+    <p class="muted">
+      <%= items.length %>
+      report<%= items.length === 1 ? '' : 's' %>
+      shown
+    </p>
+
+  </div>
+
+
+  <!-- =========================
+       REPORT TABLE
+       ========================= -->
+
+  <% if (items.length > 0) { %>
+
+    <div class="admin-table-wrap">
+
+      <table class="admin-table">
+
+        <thead>
+
+          <tr>
+
+            <th scope="col">
+              Report
+            </th>
+
+            <th scope="col">
+              Reporter
+            </th>
+
+            <th scope="col">
+              Location
+            </th>
+
+            <th scope="col">
+              Status
+            </th>
+
+            <th scope="col">
+              Manage
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <% items.forEach(function(item) { %>
+
+            <tr>
+
+              <td>
+
+                <a
+                  class="admin-report-title"
+                  href="/items/<%= item.id %>"
+                >
+                  <%= item.title %>
+                </a>
+
+                <span class="admin-report-meta">
+                  <%= item.reference_no %>
+                  ·
+                  <%= item.type %>
+                  ·
+                  <%= item.category %>
+                </span>
+
+              </td>
+
+
+              <td>
+                <%= item.reporter_name || 'Unknown' %>
+              </td>
+
+
+              <td>
+                <%= item.location || 'Not specified' %>
+              </td>
+
+
+              <td>
+
+                <span class="tag tag-<%= item.status %>">
+                  <%= statusLabel(item.status) %>
+                </span>
+
+              </td>
+
+
+              <td>
+
+                <div class="admin-actions">
+
+                  <span class="admin-action-note">Report management</span>
+
+                  <!-- DELETE -->
+
+                  <form
+                    class="admin-delete-form"
+                    method="POST"
+                    action="/items/<%= item.id %>/delete"
+                    onsubmit="return confirm('Permanently remove this report?');"
+                  >
+
+                    <input
+                      type="hidden"
+                      name="returnTo"
+                      value="admin"
+                    >
+
+                    <button
+                      class="btn admin-delete-btn"
+                      type="submit"
+                    >
+                      Delete
+                    </button>
+
+                  </form>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          <% }); %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+  <% } else { %>
+
+    <div class="empty admin-empty">
+
+      <h3>
+        No reports match these filters
+      </h3>
+
+      <p>
+        Try another search or clear the filters
+        to see the full board.
+      </p>
+
+      <a
+        class="btn btn-ghost"
+        href="/admin/campus-board"
+      >
+        Clear filters
+      </a>
+
+    </div>
+
+  <% } %>
+
+</main>
+
+
+<%- include('partials/foot') %>

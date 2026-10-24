@@ -1,0 +1,360 @@
+/* ADMIN notifications page (same row layout as the student page). */
+/* =====================================================
+   Student notifications page
+   Uses the theme variables from style.css, so it follows
+   light / dark mode automatically.
+   ===================================================== */
+
+
+/* Header */
+.notif-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.notif-header h1 {
+  margin: 0;
+  font-size: 28px;
+  color: var(--ink);
+}
+
+.notif-subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.notif-subtitle strong {
+  color: var(--purple);
+}
+
+.notif-mark-all {
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--purple);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.notif-mark-all:hover {
+  background: var(--lav);
+  border-color: var(--lav-2);
+}
+
+/* Filter tabs */
+.notif-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.notif-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.notif-tab:hover {
+  color: var(--ink);
+}
+
+.notif-tab.active {
+  color: var(--purple);
+  border-bottom-color: var(--purple);
+}
+
+.notif-tab-count {
+  min-width: 20px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--purple);
+  color: #fff;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* Day groups */
+.notif-group {
+  margin: 22px 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.notif-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* One notification = one clickable row */
+.notif {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.notif:hover {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.notif:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+.notif.is-unread {
+  background: var(--lav);
+  border-color: var(--lav-2);
+}
+
+/* Avatar */
+.notif-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.notif-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.notif-avatar--student {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.notif-avatar--admin {
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 4px;
+}
+
+.notif-avatar--admin img {
+  object-fit: contain;
+}
+
+/* Text */
+.notif-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.notif-from {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.notif-from strong {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notif-badge {
+  flex-shrink: 0;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.notif-badge--student {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.notif-badge--admin {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.notif-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.notif.is-unread .notif-text {
+  color: var(--ink);
+}
+
+.notif-time {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.notif.is-unread .notif-time {
+  color: var(--purple);
+  font-weight: 600;
+}
+
+/* Item preview */
+.notif-thumb {
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+
+.notif-dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--purple);
+}
+
+/* Empty state */
+.notif-empty {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.notif-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background: var(--lav);
+  color: var(--purple);
+}
+
+.notif-empty-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.notif-empty p {
+  margin: 0;
+}
+
+/* Dark mode tweaks for the hard-coded badge colours */
+:root[data-theme="dark"] .notif-avatar--student,
+:root[data-theme="dark"] .notif-badge--student {
+  background: #1e3a5f;
+  color: #93c5fd;
+}
+
+:root[data-theme="dark"] .notif-badge--admin {
+  background: #4a3710;
+  color: #fcd34d;
+}
+
+:root[data-theme="dark"] .notif-tab.active,
+:root[data-theme="dark"] .notif-subtitle strong,
+:root[data-theme="dark"] .notif.is-unread .notif-time,
+:root[data-theme="dark"] .notif-mark-all {
+  color: #7db8f0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .notif-avatar--student,
+  :root:not([data-theme="light"]) .notif-badge--student {
+    background: #1e3a5f;
+    color: #93c5fd;
+  }
+
+  :root:not([data-theme="light"]) .notif-badge--admin {
+    background: #4a3710;
+    color: #fcd34d;
+  }
+
+  :root:not([data-theme="light"]) .notif-tab.active,
+  :root:not([data-theme="light"]) .notif-subtitle strong,
+  :root:not([data-theme="light"]) .notif.is-unread .notif-time,
+  :root:not([data-theme="light"]) .notif-mark-all {
+    color: #7db8f0;
+  }
+}
+
+@media (max-width: 600px) {
+  .notif-header h1 {
+    font-size: 24px;
+  }
+
+  .notif {
+    gap: 11px;
+    padding: 12px;
+  }
+
+  .notif-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .notif-thumb {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Admin: tabs + "mark all" sit on one row */
+.notif-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 18px 0 8px;
+}
+.notif-toolbar .notif-tabs { flex: 1; margin-bottom: 0; }
+.notif-toolbar form { margin: 0; }
+.admin-notifications-page .notif-list { max-width: 860px; }

@@ -1,0 +1,29 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<%- include('../partials/flash') %>
+
+<section class="campus-page-hero receipt-hero">
+  <div class="container">
+    <span class="campus-page-kicker">CSPC · CLAIM MESSAGES</span>
+    <h1>Messages</h1>
+    <p>
+      <%= thread.item_title %> · <%= thread.reference_no %>
+      · <span class="tag tag-<%= thread.item_status %>"><%= statusLabel(thread.item_status) %></span>
+    </p>
+  </div>
+</section>
+
+<section class="section campus-interior-section">
+  <div class="container narrow">
+    <%- include('../partials/claim-thread', { threads: [thread], user: user, returnTo: 'thread' }) %>
+
+    <div class="receipt-actions" style="margin-top:18px;">
+      <% if (isClaimant) { %>
+        <a class="btn btn-ghost" href="/items/claims/<%= thread.claim_id %>/receipt">View claim receipt</a>
+      <% } %>
+      <a class="btn btn-ghost" href="/notifications">Back to notifications</a>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/foot') %>

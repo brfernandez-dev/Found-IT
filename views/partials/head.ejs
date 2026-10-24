@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · Found IT!</title>
+  <meta name="description" content="Found IT! is the CSPC campus lost and found. Report, search, and claim belongings around Camarines Sur Polytechnic Colleges.">
+  <meta name="theme-color" content="#092e59">
+  <meta property="og:title" content="Found IT! · CSPC Campus Lost &amp; Found">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" href="/images/cspc-logo.png">
+  <script>
+    // Runs before the stylesheet paints, so a stored dark-mode
+    // choice applies immediately instead of flashing light first.
+    (function () {
+      try {
+        var t = localStorage.getItem('reunite-theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/student/style.css">
+  <link rel="stylesheet" href="/css/student/polish.css">
+  <link rel="stylesheet" href="/css/messages.css">
+  <% if (currentPath === '/notifications') { %>
+  <link rel="stylesheet" href="/css/student/notifications.css">
+  <% } %>
+</head>
+<body>

@@ -1,0 +1,69 @@
+/* Claim message box (student + admin) */
+.claim-messages { margin: 24px 0 0; padding: 22px; background: var(--surface, #fff); border: 1px solid var(--line, #e5e7eb); border-radius: 10px; }
+.claim-messages h2 { margin: 0 0 4px; font-size: 1.25rem; }
+.claim-messages-intro { margin: 0 0 16px; color: var(--muted, #64748b); font-size: .92rem; }
+.cm-thread { border: 1px solid var(--line, #e5e7eb); border-radius: 10px; padding: 14px; margin-top: 14px; }
+.cm-thread-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+.cm-claim-status { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: #e0e7ff; color: #3730a3; }
+.cm-claim-approved { background: #dcfce7; color: #166534; }
+.cm-claim-rejected { background: #fee2e2; color: #991b1b; }
+.cm-list { list-style: none; margin: 0 0 12px; padding: 4px; display: flex; flex-direction: column; gap: 10px; max-height: 360px; overflow-y: auto; }
+.cm-empty { color: var(--muted, #64748b); font-size: .92rem; text-align: center; padding: 14px 0; }
+.cm-msg { max-width: 82%; padding: 9px 13px; border-radius: 12px; background: var(--lav, #e8f2fc); }
+.cm-msg.is-mine { align-self: flex-end; background: #104578; color: #fff; }
+.cm-msg.is-theirs { align-self: flex-start; }
+.cm-meta { display: flex; gap: 6px; align-items: center; font-size: .78rem; margin-bottom: 2px; }
+.cm-role { font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 1px 7px; border-radius: 999px; background: rgba(0,0,0,.12); }
+.cm-msg.is-mine .cm-role { background: rgba(255,255,255,.22); }
+.cm-msg p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cm-msg time { display: block; margin-top: 4px; font-size: .7rem; opacity: .75; }
+:root[data-theme="dark"] .cm-msg.is-theirs { color: #e5e7eb; }
+
+/* Admin / staff messages: highlighted so they stand out from the conversation */
+.cm-msg.is-staff,
+:root[data-theme="dark"] .cm-msg.is-staff {
+  background: linear-gradient(135deg, #fcd34d, #f59e0b);
+  color: #3b2300;
+  border: 1px solid #b45309;
+  border-left: 5px solid #92400e;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, .35);
+}
+.cm-msg.is-staff .cm-role { background: #78350f; color: #fffbeb; }
+.cm-msg.is-staff time { opacity: .8; }
+.cm-label { display: block; font-weight: 600; font-size: .88rem; margin-bottom: 5px; }
+.cm-form textarea { width: 100%; box-sizing: border-box; resize: vertical; font: inherit; }
+.cm-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; }
+.cm-hint { color: var(--muted, #64748b); font-size: .8rem; }
+.cm-closed { margin: 0; padding: 10px 12px; border-radius: 8px; background: var(--lav, #e8f2fc); color: var(--muted, #64748b); font-size: .9rem; }
+
+/* Message box field inside the claim form */
+.claim-message-field { margin-top: 4px; }
+
+/* Staff status controls */
+.status-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 12px; }
+.status-controls label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: .88rem; }
+.status-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+.status-legend li { display: flex; align-items: center; gap: 6px; font-size: .84rem; color: var(--muted, #64748b); }
+
+@media (max-width: 600px) { .cm-msg { max-width: 94%; } }
+
+/* Status chips (admin campus board) */
+.status-chips { display: flex; flex-wrap: wrap; gap: 10px; margin: -8px 0 20px; }
+.status-chip { display: inline-flex; gap: 8px; align-items: center; text-decoration: none; padding: 7px 14px; font-size: .8rem; }
+.status-chip strong { font-size: .95rem; }
+
+/* Report review (approve / reject) */
+.review-banner { display: flex; flex-direction: column; gap: 4px; margin: 0 0 18px; padding: 14px 16px; border-radius: 10px; border: 1px solid #fcd34d; background: #fffbeb; color: #78350f; }
+.review-banner.is-rejected { border-color: #fca5a5; background: #fef2f2; color: #7f1d1d; }
+.review-banner span { font-size: .92rem; }
+.review-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; align-items: center; }
+.review-actions form, .review-reject { display: flex; gap: 8px; align-items: center; margin: 0; }
+.review-reject input[type="text"] { min-width: 200px; padding: 8px 10px; border: 1px solid var(--line, #e5e7eb); border-radius: 8px; font: inherit; }
+.tag-review { background: #fef3c7; color: #92400e; }
+.report-review-card { display: flex; gap: 14px; align-items: flex-start; }
+.report-review-thumb { width: 96px; height: 96px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line, #e5e7eb); flex-shrink: 0; }
+.report-review-info { flex: 1; min-width: 0; }
+.report-review-info .notification-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+:root[data-theme="dark"] .review-banner { background: #3a2c0b; color: #fde68a; border-color: #8a6a14; }
+:root[data-theme="dark"] .review-banner.is-rejected { background: #3b1414; color: #fecaca; border-color: #8a2a2a; }
+@media (max-width: 600px) { .report-review-card { flex-direction: column; } .review-reject input[type="text"] { min-width: 0; width: 100%; } }

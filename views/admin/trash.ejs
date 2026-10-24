@@ -1,0 +1,26 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+<%- include('partials/flash') %>
+<main class="admin-content admin-page admin-trash-page">
+  <section class="admin-page-header admin-inner-page-header">
+    <div><span class="admin-eyebrow">CSPC · STAFF CONSOLE</span><h1>Trash</h1><p>Completed transactions stay here for 30 days before permanent deletion.</p></div>
+    <a class="btn btn-ghost" href="/admin/campus-board">← Back to overview</a>
+  </section>
+  <section class="trash-info-row" aria-label="Trash information">
+    <div class="trash-info-icon" aria-hidden="true">⌛</div>
+    <div><strong>Temporary storage</strong><p>Reports in Trash are retained for a limited time. The countdown shows how long remains before automatic cleanup.</p></div>
+    <span class="trash-total"><strong><%= items.length %></strong><small>report<%= items.length === 1 ? '' : 's' %></small></span>
+  </section>
+  <% if (items.length) { %>
+    <div class="admin-list-heading trash-list-heading"><div><h2>Archived reports</h2><p class="muted">Completed transactions retained for reference</p></div></div>
+    <div class="admin-table-wrap"><table class="admin-table trash-table">
+      <thead><tr><th scope="col">Report</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Deletion schedule</th></tr></thead><tbody>
+      <% items.forEach(function(item) { const daysLeft = Math.max(0, 30 - Math.floor((Date.now() - new Date(item.trashed_at).getTime()) / 86400000)); %>
+        <tr><td><div class="trash-report-name"><span class="trash-file-icon" aria-hidden="true">▤</span><span><strong><%= item.title %></strong><small><%= item.reference_no %></small></span></div></td><td><span class="admin-type-pill <%= item.type === 'lost' ? 'is-lost' : 'is-found' %>"><%= item.type %></span></td><td><span class="tag tag-<%= item.status %>"><%= statusLabel(item.status) %></span></td><td><div class="trash-countdown"><strong><%= daysLeft %> day<%= daysLeft === 1 ? '' : 's' %></strong><small>until permanent deletion</small></div></td></tr>
+      <% }); %>
+      </tbody></table></div>
+  <% } else { %>
+    <section class="admin-empty trash-empty"><div class="trash-empty-icon" aria-hidden="true">▤</div><h2>Trash is empty</h2><p>Completed transactions that are moved here will appear in this list.</p><a class="btn btn-primary" href="/admin/campus-board">Return to overview</a></section>
+  <% } %>
+</main>
+<%- include('partials/foot') %>

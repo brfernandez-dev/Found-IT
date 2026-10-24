@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · Found IT!</title>
+  <meta name="theme-color" content="#092e59">
+  <link rel="icon" type="image/png" href="/images/cspc-logo.png">
+  <script>
+    // Runs before the stylesheet paints, so a stored dark-mode
+    // choice applies immediately instead of flashing light first.
+    (function () {
+      try {
+        var t = localStorage.getItem('reunite-theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/admin/admin.css">
+  <link rel="stylesheet" href="/css/admin/polish.css">
+  <link rel="stylesheet" href="/css/messages.css">
+  <% if (currentPath === '/admin/campus-board') { %>
+  <link rel="stylesheet" href="/css/admin/campus-board.css">
+  <% } %>
+  <% if (currentPath === '/notifications') { %>
+  <link rel="stylesheet" href="/css/admin/notifications.css">
+  <% } %>
+</head>
+<body>

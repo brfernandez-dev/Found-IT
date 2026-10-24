@@ -1,0 +1,11 @@
+/* "Take photo" button + camera dialog */
+.btn-camera { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; margin: 0; }
+.found-field .btn-camera { margin-top: 8px; padding: 9px 14px; border-radius: 8px; border: 1px solid #104578; background: transparent; color: #104578; font: inherit; font-weight: 600; }
+:root[data-theme="dark"] .found-field .btn-camera { color: #93c5fd; border-color: #93c5fd; }
+.cam-overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,.8); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.cam-dialog { width: min(520px, 100%); background: #0f172a; color: #fff; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.cam-dialog video { width: 100%; max-height: 60vh; border-radius: 10px; background: #000; object-fit: cover; }
+.cam-dialog-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.cam-dialog-actions button { padding: 10px 16px; border-radius: 8px; border: 1px solid #475569; background: transparent; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+.cam-dialog-actions .cam-snap { background: #f59e0b; border-color: #f59e0b; color: #3b2300; }
+.cam-error { color: #fca5a5; font-size: .9rem; margin: 0; }

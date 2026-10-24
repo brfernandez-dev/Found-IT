@@ -1,0 +1,65 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+
+<section class="campus-page-hero receipt-hero">
+  <div class="container">
+    <span class="campus-page-kicker">CSPC · CLAIM <%= receipt.status === 'approved' ? 'APPROVED' : receipt.status === 'rejected' ? 'REJECTED' : 'SUBMITTED' %></span>
+    <h1>Claim receipt</h1>
+    <p>
+      <% if (receipt.status === 'approved') { %>Your claim was approved. Keep this reference for your records.
+      <% } else if (receipt.status === 'rejected') { %>Your claim was not approved. Keep this reference for your records.
+      <% } else { %>Keep this reference for your records. Your claim is awaiting review.<% } %>
+    </p>
+  </div>
+</section>
+
+<section class="section campus-interior-section receipt-section">
+  <div class="container narrow">
+    <article class="claim-receipt">
+      <div class="receipt-heading">
+        <div>
+          <span class="receipt-label">Claim reference</span>
+          <h2>CLM-<%= String(receipt.id).padStart(6, '0') %></h2>
+        </div>
+        <span class="tag <%= receipt.status === 'approved' ? 'tag-claimed' : 'tag-claim_pending' %>"><%= receipt.status %></span>
+      </div>
+
+      <dl class="detail-meta receipt-meta">
+        <div>
+          <dt>Item</dt>
+          <dd><%= receipt.item_title %></dd>
+        </div>
+        <div>
+          <dt>Item reference</dt>
+          <dd><%= receipt.item_reference %></dd>
+        </div>
+        <div>
+          <dt>Category</dt>
+          <dd><%= receipt.category || 'Other' %></dd>
+        </div>
+        <div>
+          <dt>General location</dt>
+          <dd><%= receipt.location || 'Not specified' %></dd>
+        </div>
+        <div>
+          <dt>Submitted by</dt>
+          <dd><%= receipt.claimant_name %> · <%= receipt.claimant_email %></dd>
+        </div>
+        <div>
+          <dt>Date submitted</dt>
+          <dd><%= new Date(receipt.created_at).toLocaleString() %></dd>
+        </div>
+      </dl>
+
+      <p class="receipt-note">This receipt confirms that your claim was submitted. It does not confirm ownership or approval. The report owner will review your claim and contact you through the account details on file.</p>
+    </article>
+
+    <div class="receipt-actions">
+      <button class="btn btn-primary" type="button" onclick="window.print()">Print receipt</button>
+      <a class="btn btn-ghost" href="/items/claims/<%= receipt.id %>/messages">Open messages</a>
+      <a class="btn btn-ghost" href="/items">Return to campus board</a>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/foot') %>

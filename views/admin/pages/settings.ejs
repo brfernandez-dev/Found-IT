@@ -1,0 +1,56 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<%- include('../partials/flash') %>
+
+<section class="campus-page-hero">
+  <div class="container">
+    <span class="campus-page-kicker">CSPC · MEMBER SERVICES</span>
+    <h1>Account settings</h1>
+    <p>Keep your Found IT! profile up to date and choose how the campus board looks on this device.</p>
+  </div>
+</section>
+
+<section class="section campus-interior-section">
+  <div class="container narrow">
+    <div class="auth-card campus-settings-card">
+      <h2>Profile</h2>
+      <form method="post" action="/settings/profile" novalidate>
+        <label for="displayName">Name</label>
+        <input id="displayName" type="text" name="displayName"
+               value="<%= profile.display_name %>" minlength="2" required>
+
+        <label for="email">Email</label>
+        <input id="email" type="email" value="<%= profile.email %>" disabled>
+
+        <label for="role">Role</label>
+        <input id="role" type="text" value="<%= profile.role %>" disabled>
+
+        <label for="memberSince">Member since</label>
+        <input id="memberSince" type="text"
+               value="<%= new Date(profile.created_at).toLocaleDateString() %>" disabled>
+
+        <button class="btn btn-dark" type="submit">Save changes</button>
+      </form>
+    </div>
+
+    <div class="auth-card settings-card-spaced campus-settings-card">
+      <h2>Appearance</h2>
+      <div class="switch-row">
+        <div class="switch-label">
+          <strong>Dark mode</strong>
+          <span>Switch between a light and dark look for the whole site.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" data-theme-toggle aria-label="Toggle dark mode">
+          <span class="switch-track" aria-hidden="true"></span>
+          <span class="switch-thumb" aria-hidden="true"></span>
+        </label>
+      </div>
+      <p class="small muted settings-hint">
+        This is saved on this device/browser only, the same as the toggle in the menu above.
+      </p>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/foot') %>

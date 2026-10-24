@@ -1,0 +1,67 @@
+<%
+  // Expects: threads (array), user. Optional: locals.returnTo ('thread' on the standalone page).
+  const cmThreads = locals.threads || [];
+  const cmReturnTo = locals.returnTo || '';
+  const cmViewerId = user ? String(user.id) : '';
+  const cmWho = function (m, t) {
+    if (m.sender_role === 'staff') return 'Staff';
+    if (String(m.sender_id) === String(t.claimant_id)) return 'Claimant';
+    if (t.finder_id && String(m.sender_id) === String(t.finder_id)) return 'Finder';
+    return '';
+  };
+  const cmClaimLabel = { pending: 'Pending', approved: 'Approved', rejected: 'Rejected' };
+%>
+<% if (cmThreads.length) { %>
+<section class="claim-messages" id="claim-messages" aria-labelledby="claim-messages-heading">
+  <h2 id="claim-messages-heading">Messages</h2>
+  <p class="claim-messages-intro">
+    A private message box between the person who posted the found item, the person claiming it, and the admin.
+    Do not share passwords, ID numbers or account numbers here.
+  </p>
+
+  <% cmThreads.forEach(function (t) { %>
+    <div class="cm-thread" id="claim-messages-<%= t.claim_id %>">
+      <div class="cm-thread-head">
+        <strong>
+          <% if (user && String(t.claimant_id) === cmViewerId) { %>Your claim<% } else { %>Claim by <%= t.claimant_name %><% } %>
+        </strong>
+        <span class="cm-claim-status cm-claim-<%= t.claim_status %>"><%= cmClaimLabel[t.claim_status] || t.claim_status %></span>
+      </div>
+
+      <ol class="cm-list" aria-live="polite">
+        <% if (!t.messages.length) { %>
+          <li class="cm-empty">No messages yet. Say hello and describe the item so it can be verified.</li>
+        <% } %>
+        <% t.messages.forEach(function (m) { %>
+          <% const mine = String(m.sender_id) === cmViewerId; %>
+          <li class="cm-msg <%= mine ? 'is-mine' : 'is-theirs' %><%= m.sender_role === 'staff' ? ' is-staff' : '' %>">
+            <div class="cm-meta">
+              <strong><%= mine ? 'You' : (m.sender_name || 'Former user') %></strong>
+              <% if (cmWho(m, t)) { %><span class="cm-role"><%= cmWho(m, t) %></span><% } %>
+            </div>
+            <p><%= m.body %></p>
+            <time datetime="<%= new Date(m.created_at).toISOString() %>"><%= new Date(m.created_at).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) %></time>
+          </li>
+        <% }); %>
+      </ol>
+
+      <% if (t.canSend) { %>
+        <form class="cm-form" method="POST" action="/items/claims/<%= t.claim_id %>/messages">
+          <% if (cmReturnTo) { %><input type="hidden" name="returnTo" value="<%= cmReturnTo %>"><% } %>
+          <label for="cm-body-<%= t.claim_id %>" class="cm-label">Write a message</label>
+          <textarea id="cm-body-<%= t.claim_id %>" name="body" rows="3" maxlength="1000" required placeholder="Type your message…"></textarea>
+          <div class="cm-actions">
+            <span class="cm-hint">Max 1000 characters</span>
+            <button class="btn btn-primary" type="submit">Send message</button>
+          </div>
+        </form>
+      <% } else { %>
+        <p class="cm-closed">
+          This conversation is closed
+          <%= t.claim_status === 'rejected' ? 'because the claim was not approved.' : 'because the item was returned.' %>
+        </p>
+      <% } %>
+    </div>
+  <% }); %>
+</section>
+<% } %>

@@ -1,0 +1,24 @@
+{
+  "name": "found-it",
+  "version": "1.0.0",
+  "description": "Found IT! - a campus Lost and Found system built with Node.js, Express, EJS, and MySQL for Weeks 1-8.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "express-session": "^1.18.0",
+    "multer": "^2.4.0",
+    "mysql2": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

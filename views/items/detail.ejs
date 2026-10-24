@@ -1,0 +1,1263 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<%- include('../partials/flash') %>
+
+<style>
+
+.item-detail-page {
+  padding: 34px 0 60px;
+  background: var(--bg);
+}
+
+.item-detail-container {
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.detail-back:hover {
+  color: var(--ink);
+}
+
+.detail-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(16, 54, 91, .07);
+}
+
+.detail-main {
+  display: grid;
+  grid-template-columns: 42% 58%;
+  min-height: 430px;
+}
+
+.detail-photo {
+  min-height: 430px;
+  padding: 22px;
+  background: #f5f8fb;
+  border-right: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-photo-inner {
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  border-radius: 14px;
+  background: #edf2f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.detail-photo img {
+  display: block;
+  max-width: 100%;
+  max-height: 380px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 10px;
+}
+
+.detail-no-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: #72859a;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.detail-no-photo-icon {
+  width: 62px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #d9e2ea;
+  font-size: 28px;
+}
+
+.detail-content {
+  padding: 30px 34px;
+}
+
+.detail-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.detail-type {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.detail-type.lost {
+  background: #eef4fb;
+  color: #145b93;
+}
+
+.detail-type.found {
+  background: #edf6ed;
+  color: #36713a;
+}
+
+.detail-status {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.detail-content h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 38px);
+  line-height: 1.12;
+  letter-spacing: -.025em;
+  color: var(--ink);
+}
+
+.detail-reference {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.detail-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.detail-info-box {
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: rgba(255,255,255,.45);
+}
+
+.detail-info-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+.detail-info-value {
+  display: block;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.detail-description {
+  margin-top: 22px;
+}
+
+.detail-description-title {
+  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+}
+
+.detail-description p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+
+/* =====================================================
+   ACTION
+   ===================================================== */
+
+.detail-action {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.detail-action-note {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.detail-claim-button,
+.detail-found-button {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.detail-claim-button:hover,
+.detail-found-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgba(16, 54, 91, .18);
+}
+
+.detail-found-button {
+  background: #36713a;
+}
+
+.claim-submitted {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #edf7ef;
+  color: #286235;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+
+/* =====================================================
+   LOWER INFORMATION
+   ===================================================== */
+
+.detail-lower {
+  border-top: 1px solid var(--line);
+  padding: 22px 30px;
+}
+
+.detail-lower-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.detail-lower-box {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.detail-lower-box h3 {
+  margin: 0 0 9px;
+  font-size: 13px;
+}
+
+.detail-lower-box p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+
+/* =====================================================
+   RELATED FOUND REPORTS
+   ===================================================== */
+
+.related-found {
+  margin-top: 20px;
+}
+
+.related-found-title {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+
+.related-found-list {
+  display: grid;
+  gap: 9px;
+}
+
+.related-found-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.related-found-card:hover {
+  background: #f7fafc;
+}
+
+.related-found-info strong {
+  display: block;
+  font-size: 13px;
+}
+
+.related-found-info span {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+
+/* =====================================================
+   CLAIM FORM
+   ===================================================== */
+
+.detail-claim-form {
+  margin-top: 20px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.detail-claim-form h2 {
+  margin: 0 0 5px;
+  font-size: 20px;
+}
+
+.detail-claim-form .form-note {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.detail-claim-form label {
+  display: block;
+  margin-top: 13px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.detail-claim-form textarea,
+.detail-claim-form input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 6px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+}
+
+.detail-claim-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.detail-claim-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 17px;
+}
+
+
+/* =====================================================
+   ADMIN
+   ===================================================== */
+
+.detail-admin {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+}
+
+.detail-admin-title {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.detail-admin-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.detail-admin-row select {
+  min-height: 40px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+
+/* Report activity timeline */
+.item-timeline {
+  margin: 22px 0 0;
+  padding: 22px 26px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.item-timeline h2 { margin: 0 0 5px; font-size: 19px; letter-spacing: -.02em; }
+.item-timeline-intro { margin: 0 0 20px; color: var(--muted); font-size: 13px; }
+.timeline-list { list-style: none; margin: 0; padding: 0; }
+.timeline-entry { position: relative; display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 12px; padding: 0 0 20px; }
+.timeline-entry:not(:last-child)::after { content: ''; position: absolute; left: 16px; top: 32px; bottom: 0; width: 2px; background: #d7e8f7; }
+.timeline-marker { z-index: 1; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: #07569a; background: #e8f4ff; border: 1px solid #c7e2f9; font-weight: 800; }
+.timeline-copy strong { display: block; margin: 1px 0 3px; font-size: 14px; color: var(--ink); }
+.timeline-copy p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.timeline-copy time { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; }
+@media (max-width: 560px) {
+  .item-timeline { padding: 18px 16px; }
+}
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 800px) {
+
+  .detail-main {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-photo {
+    min-height: 280px;
+    padding: 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .detail-photo-inner {
+    min-height: 250px;
+  }
+
+  .detail-photo img {
+    max-height: 250px;
+  }
+
+  .detail-content {
+    padding: 24px 20px;
+  }
+
+  .detail-lower {
+    padding: 18px 20px;
+  }
+
+}
+
+@media (max-width: 560px) {
+
+  .item-detail-page {
+    padding-top: 22px;
+  }
+
+  .item-detail-container {
+    padding: 0 12px;
+  }
+
+  .detail-card {
+    border-radius: 14px;
+  }
+
+  .detail-topline {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .detail-content h1 {
+    font-size: 27px;
+  }
+
+  .detail-info-grid,
+  .detail-lower-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-claim-actions {
+    flex-direction: column;
+  }
+
+  .detail-claim-actions .btn {
+    width: 100%;
+  }
+
+  .related-found-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+}
+
+
+/* =====================================================
+   LOST-ITEM OWNER VIEWING A FINDER'S REPORT
+   ===================================================== */
+
+.found-for-you {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--lav-2);
+  border-radius: 14px;
+  background: var(--lav);
+}
+
+.found-for-you-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.found-for-you h2 {
+  margin: 0 0 3px;
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.found-for-you p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.finder-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.finder-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+.finder-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.finder-info small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.finder-info strong {
+  color: var(--ink);
+}
+
+.finder-info a {
+  color: var(--purple);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.lost-link-button {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--purple);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.lost-link-button:hover {
+  text-decoration: underline;
+}
+</style>
+
+
+<section class="item-detail-page">
+
+  <div class="item-detail-container">
+
+    <% if (isLostOwnerView) { %>
+      <a class="detail-back" href="/notifications">
+        ← Back to notifications
+      </a>
+
+      <div class="found-for-you" role="status">
+        <span class="found-for-you-icon" aria-hidden="true">✓</span>
+        <div>
+          <h2><%= item.reporter_name || 'A student' %> found your lost item</h2>
+          <p>Here is their report. Check the photo and details to see if it's really yours.</p>
+        </div>
+      </div>
+    <% } else { %>
+      <a
+        class="detail-back"
+        href="/items"
+      >
+        ← Back to Lost &amp; Found
+      </a>
+    <% } %>
+
+
+    <% if (item.approval_status === 'pending') { %>
+      <div class="review-banner is-pending" role="status">
+        <strong>Waiting for admin approval</strong>
+        <span>Only you and the admin can see this report for now. It will appear on the campus board once it is approved, and you will be notified.</span>
+      </div>
+    <% } else if (item.approval_status === 'rejected') { %>
+      <div class="review-banner is-rejected" role="status">
+        <strong>This report was not approved</strong>
+        <span>It will not appear on the campus board.<%= item.review_note ? ' Reason: ' + item.review_note : '' %> You can delete it and post a new report with corrected details.</span>
+      </div>
+    <% } %>
+
+    <article class="detail-card">
+
+
+      <!-- =================================================
+           MAIN ITEM
+           ================================================= -->
+
+      <div class="detail-main">
+
+
+        <!-- PHOTO -->
+
+        <div class="detail-photo">
+
+          <div class="detail-photo-inner">
+
+            <% if (item.image_url) { %>
+
+              <img
+                src="<%= item.image_url %>"
+                alt="Photo of <%= item.title %>"
+              >
+
+            <% } else { %>
+
+              <div class="detail-no-photo">
+
+                <div class="detail-no-photo-icon">
+                  <%= item.type === 'lost' ? '⌕' : '✓' %>
+                </div>
+
+                <span>
+                  No photo available
+                </span>
+
+              </div>
+
+            <% } %>
+
+          </div>
+
+        </div>
+
+
+        <!-- INFORMATION -->
+
+        <div class="detail-content">
+
+          <div class="detail-topline">
+
+            <span
+              class="detail-type <%= item.type === 'lost'
+                ? 'lost'
+                : 'found' %>"
+            >
+              <%= isLostOwnerView
+                ? 'Found report'
+                : item.type === 'lost'
+                  ? 'Lost item'
+                  : 'Found item' %>
+            </span>
+
+
+            <span class="detail-status">
+              <%= statusLabel(item.status) %>
+            </span>
+
+          </div>
+
+
+          <h1>
+            <%= item.title %>
+          </h1>
+
+
+          <div class="detail-reference">
+
+            Reference:
+            <strong>
+              <%= item.reference_no %>
+            </strong>
+
+          </div>
+
+          <% if (!isLostOwnerView) { %>
+            <div class="detail-poster">
+              Posted by
+              <strong><%= currentUser ? (item.reporter_name || 'A student') : 'a CSPC member' %></strong>
+            </div>
+          <% } %>
+
+
+          <div class="detail-info-grid">
+
+            <div class="detail-info-box">
+
+              <span class="detail-info-label">
+                <%= isLostOwnerView ? 'Where it was found' : 'Location' %>
+              </span>
+
+              <span class="detail-info-value">
+                <%= item.location || 'Not specified' %>
+              </span>
+
+            </div>
+
+
+            <div class="detail-info-box">
+
+              <span class="detail-info-label">
+                Date reported
+              </span>
+
+              <span class="detail-info-value">
+
+                <%= item.date_reported
+                  ? new Date(
+                      item.date_reported
+                    ).toLocaleDateString(
+                      'en-PH',
+                      {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      }
+                    )
+                  : 'Not specified'
+                %>
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="detail-description">
+
+            <div class="detail-description-title">
+              <%= isLostOwnerView ? "Finder's description" : 'Description' %>
+            </div>
+
+            <p>
+              <%= item.description ||
+                'No description provided.' %>
+            </p>
+
+          </div>
+
+
+          <!-- =================================================
+               LOST ITEM → FOUND BUTTON
+               ================================================= -->
+
+          <% if (
+            item.type === 'lost' &&
+            item.status === 'unclaimed'
+          ) { %>
+
+            <div class="detail-action">
+
+              <p class="detail-action-note">
+                Found this item somewhere on campus?
+                Report it as found so it can be connected
+                to this lost report.
+              </p>
+
+
+              <a
+                class="detail-found-button"
+                    href="/items/<%= item.id %>/found"
+                        >
+                      I found this item →
+                        </a>
+
+            </div>
+
+          <% } %>
+
+
+          <!-- =================================================
+               FOUND ITEM → CLAIM
+               ================================================= -->
+
+          <% if (isLostOwnerView) { %>
+
+            <div class="detail-action">
+
+              <div class="finder-card">
+                <span class="finder-avatar" aria-hidden="true">
+                  <%= String(item.reporter_name || '?').trim().charAt(0).toUpperCase() %>
+                </span>
+                <span class="finder-info">
+                  <small>Reported by</small>
+                  <strong><%= item.reporter_name || 'A student' %></strong>
+                  <% if (item.reporter_contact && item.reporter_contact !== 'N/A') { %>
+                    <a href="mailto:<%= item.reporter_contact %>"><%= item.reporter_contact %></a>
+                  <% } %>
+                </span>
+              </div>
+
+              <% if (linkedLostItem) { %>
+                <a class="lost-link-button" href="/items/<%= linkedLostItem.id %>">
+                  View your lost report (<%= linkedLostItem.reference_no %>) →
+                </a>
+              <% } %>
+
+            </div>
+
+          <% } else if (
+            item.type === 'found' &&
+            item.status === 'unclaimed'
+          ) { %>
+
+            <div class="detail-action">
+
+              <% if (!user) { %>
+
+                <p class="detail-action-note">
+                  Log in to submit a claim if this is your item.
+                </p>
+
+                <a
+                  class="detail-claim-button"
+                  href="/login?next=/items/<%= item.id %>"
+                >
+                  Log in to claim this item →
+                </a>
+
+
+              <% } else if (isReporter) { %>
+
+                <div class="claim-submitted">
+                  You reported this item, so you cannot claim it yourself.
+                </div>
+
+
+              <% } else if (myClaim && ['pending', 'approved'].includes(myClaim.status)) { %>
+
+                <div class="claim-submitted">
+                  ✓ <%= myClaim.status === 'approved' ? 'Your claim was approved.' : 'Your claim is awaiting review.' %>
+                </div>
+
+
+              <% } else { %>
+
+                <p class="detail-action-note">
+                  Think this item belongs to you?
+                  Submit a claim with information
+                  that can help verify ownership.
+                </p>
+
+                <a
+                  class="detail-claim-button"
+                  href="#claim-form"
+                >
+                  This is my item →
+                </a>
+
+              <% } %>
+
+            </div>
+
+          <% } %>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           LOWER INFORMATION
+           ================================================= -->
+
+      <div class="detail-lower">
+
+        <div class="detail-lower-grid">
+
+
+          <div class="detail-lower-box">
+
+            <h3>
+
+              <%= isLostOwnerView
+                ? 'What happens next?'
+                : item.type === 'lost'
+                  ? 'Looking for this item?'
+                  : 'Recognize this item?' %>
+
+            </h3>
+
+            <p>
+
+              <% if (isLostOwnerView) { %>
+
+                The admin has also been notified about this report.
+                If it's your item, contact the finder or bring the
+                reference number <strong><%= item.reference_no %></strong>
+                to the admin office to get it back.
+
+              <% } else if (item.type === 'lost') { %>
+
+                If you found this item,
+                use the button above to report it
+                as a found item.
+
+              <% } else { %>
+
+                If this belongs to you,
+                submit a claim and provide details
+                that can help verify ownership.
+
+              <% } %>
+
+            </p>
+
+          </div>
+
+
+          <div class="detail-lower-box">
+
+            <h3>
+              Privacy reminder
+            </h3>
+
+            <p>
+              Do not share passwords, ID numbers,
+              account numbers, or other private
+              information <%= isLostOwnerView ? 'when contacting the finder' : 'in your claim' %>.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             LINKED FOUND REPORTS
+             ================================================= -->
+
+        <% if (
+          item.type === 'lost' &&
+          relatedFoundItems &&
+          relatedFoundItems.length
+        ) { %>
+
+          <div class="related-found">
+
+            <h3 class="related-found-title">
+              Found reports linked to this item
+            </h3>
+
+
+            <div class="related-found-list">
+
+              <% relatedFoundItems.forEach(found => { %>
+
+                <a
+                  class="related-found-card"
+                  href="/items/<%= found.id %>"
+                >
+
+                  <div class="related-found-info">
+
+                    <strong>
+                      <%= found.title %>
+                    </strong>
+
+                    <span>
+                      <%= found.reference_no %>
+                      ·
+                      <%= found.location || 'Location not specified' %>
+                    </span>
+
+                  </div>
+
+
+                  <span>
+                    →
+                  </span>
+
+                </a>
+
+              <% }) %>
+
+            </div>
+
+          </div>
+
+        <% } %>
+
+      </div>
+
+    </article>
+
+    <section class="item-timeline" aria-labelledby="timeline-heading">
+      <h2 id="timeline-heading">Report timeline</h2>
+      <p class="item-timeline-intro">Follow the important updates for this <%= item.type === 'lost' ? 'lost' : 'found' %> report.</p>
+      <ol class="timeline-list">
+        <% const timelineEvents = (timeline && timeline.length) ? timeline : [{
+          event_type: 'reported',
+          message: item.type === 'lost' ? 'Lost item report was posted.' : 'Found item report was posted.',
+          created_at: item.created_at,
+          actor_name: null
+        }]; %>
+        <% timelineEvents.forEach(function (event) { %>
+          <li class="timeline-entry">
+            <span class="timeline-marker" aria-hidden="true">
+              <% if (event.event_type === 'reported') { %>✓<% } else if (event.event_type === 'claim_submitted') { %>…<% } else if (event.event_type === 'claim_approved') { %>✓<% } else if (event.event_type === 'claim_rejected') { %>×<% } else if (event.event_type === 'found_linked') { %>↗<% } else { %>•<% } %>
+            </span>
+            <div class="timeline-copy">
+              <strong><%= event.event_type === 'reported' ? 'Report posted' : event.event_type === 'claim_submitted' ? 'Claim submitted' : event.event_type === 'claim_approved' ? 'Claim approved' : event.event_type === 'report_approved' ? 'Report approved' : event.event_type === 'report_rejected' ? 'Report not approved' : event.event_type === 'claim_rejected' ? 'Claim not approved' : event.event_type === 'found_linked' ? 'Found report linked' : 'Report updated' %></strong>
+              <p><%= event.message %></p>
+              <time datetime="<%= new Date(event.created_at).toISOString() %>"><%= new Date(event.created_at).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) %><%= event.actor_name ? ' · ' + event.actor_name : '' %></time>
+            </div>
+          </li>
+        <% }); %>
+      </ol>
+    </section>
+
+    <%- include('../partials/claim-thread', { threads: claimThreads, user: user }) %>
+
+    <!-- =================================================
+         CLAIM FORM
+         ================================================= -->
+
+    <% if (
+      user &&
+      !isLostOwnerView &&
+      item.type === 'found' &&
+      item.status === 'unclaimed' &&
+      !myClaim &&
+      !isReporter
+    ) { %>
+
+      <div
+        class="detail-claim-form"
+        id="claim-form"
+      >
+
+        <h2>
+          Submit a claim
+        </h2>
+
+        <p class="form-note">
+          Tell the reporter why you believe this item belongs to you.
+          Your answers will be used to verify the claim.
+        </p>
+
+
+        <form
+          method="POST"
+          action="/items/<%= item.id %>/claim"
+        >
+
+
+          <label>
+
+            Why is this your item?
+
+            <textarea
+              name="reason"
+              required
+              maxlength="2000"
+              placeholder="Explain how you lost or recognized the item."
+            ></textarea>
+
+          </label>
+
+
+          <label>
+
+            Distinguishing detail
+
+            <textarea
+              name="distinguishing_detail"
+              required
+              maxlength="2000"
+              placeholder="Mention a detail only the real owner would likely know."
+            ></textarea>
+
+          </label>
+
+
+          <label>
+
+            Approximate date you lost it
+
+            <input
+              type="date"
+              name="dateLost"
+            >
+
+          </label>
+
+
+          <label>
+
+            Additional information
+
+            <span
+              style="font-weight:400;color:var(--muted);"
+            >
+              (optional)
+            </span>
+
+            <textarea
+              name="extraInfo"
+              maxlength="2000"
+              placeholder="Anything else that may help verify your claim."
+            ></textarea>
+
+          </label>
+
+
+          <label class="claim-message-field">
+            Message to the finder
+            <span style="font-weight:400;color:var(--muted);">(optional)</span>
+            <textarea
+              name="message"
+              maxlength="1000"
+              placeholder="Say hello or ask the finder where and when you can meet."
+            ></textarea>
+          </label>
+
+          <div class="detail-claim-actions">
+
+            <a
+              class="btn btn-ghost"
+              href="/items/<%= item.id %>"
+            >
+              Cancel
+            </a>
+
+
+            <button
+              class="btn btn-primary"
+              type="submit"
+            >
+              Submit claim →
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    <% } %>
+
+
+    <!-- =================================================
+         STAFF / ADMIN
+         ================================================= -->
+
+    <% if (
+      user &&
+      user.role === 'staff'
+    ) { %>
+
+      <div class="detail-admin">
+
+        <h3 class="detail-admin-title">
+          Staff controls
+        </h3>
+
+
+        <p class="muted">Item status updates automatically when a claim is submitted or reviewed.</p>
+
+      </div>
+
+    <% } %>
+
+
+  </div>
+
+</section>
+
+
+<%- include('../partials/foot') %>

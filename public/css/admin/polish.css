@@ -1,0 +1,397 @@
+/* ==========================================================================
+   Found IT! — admin polish layer
+   Loaded AFTER admin/admin.css. Additive only: focus, motion, dark-mode
+   consistency, mobile sidebar backdrop, and horizontally scrollable tables.
+   ========================================================================== */
+
+:root {
+  --ring: #2f8bea;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Explicit dark mode used pure black for page and cards alike; match the
+   navy palette that the OS-dark default already uses. */
+:root[data-theme="dark"] {
+  --bg: #091522;
+  --surface: #102238;
+  --ring: #6db6ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ring: #6db6ff;
+  }
+}
+
+/* ---------- Base ---------- */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img {
+  max-width: 100%;
+}
+::selection {
+  background: #cfe2f5;
+  color: #092e59;
+}
+
+/* ---------- Accessibility ---------- */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ---------- Motion ---------- */
+.btn {
+  transition:
+    transform 0.18s var(--ease),
+    box-shadow 0.18s var(--ease),
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.admin-nav-link {
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+/* Submit buttons show progress after click (set by js/enhance.js) */
+button.is-loading,
+.btn.is-loading {
+  pointer-events: none;
+  opacity: 0.85;
+}
+button.is-loading::after,
+.btn.is-loading::after {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 8px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  vertical-align: -2px;
+  animation: fi-spin 0.7s linear infinite;
+}
+@keyframes fi-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Flash messages ---------- */
+.flash {
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+.flash.is-leaving {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* ---------- Password reveal (js/enhance.js) ---------- */
+.pw-toggle {
+  position: absolute;
+  right: 8px;
+  transform: translateY(-50%);
+  min-width: 48px;
+  height: 34px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #3f6a91;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.has-pw-toggle input {
+  padding-right: 64px !important;
+}
+
+/* ---------- Back to top (js/enhance.js) ---------- */
+.to-top {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 60;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #092e59;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(9, 46, 89, 0.3);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+.to-top.is-visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* ---------- Mobile sidebar backdrop (js/admin-sidebar.js) ---------- */
+.admin-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 19; /* just under .admin-sidebar (z-index: 20) */
+  background: rgba(9, 21, 34, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.admin-backdrop.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- Tables scroll sideways on narrow screens ---------- */
+@media (max-width: 760px) {
+  .admin-main table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  select,
+  textarea {
+    font-size: 16px; /* prevents iOS zoom-on-focus */
+  }
+}
+
+@media (pointer: coarse) {
+  .btn,
+  .admin-nav-link {
+    min-height: 44px;
+  }
+}
+
+/* ---------- Respect reduced-motion settings ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  .to-top,
+  .admin-backdrop {
+    display: none !important;
+  }
+}
+
+/* ---------- Online now + "Posted by" ---------- */
+.online-panel {
+  margin: 0 0 22px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.online-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-bottom: 12px;
+}
+.online-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 17px;
+  color: var(--ink);
+}
+.online-head p {
+  margin: 0;
+  font-size: 13px;
+}
+.online-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+}
+.online-count {
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: var(--lav, #e8f2fc);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+.online-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.online-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 5px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+}
+.online-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #1766b1;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.online-name em {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 12px;
+}
+.online-role {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #092e59;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.online-more {
+  margin: 10px 0 0;
+  font-size: 13px;
+}
+
+.item-poster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.item-poster strong {
+  color: var(--ink);
+}
+.item-poster-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #1766b1;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.item-poster-line {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.item-poster-line strong,
+.detail-poster strong {
+  color: var(--ink);
+}
+.detail-poster {
+  margin: 4px 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+
+/* ---------- Admin home: "no photo" placeholder ----------
+   These three rules exist in admin.css only under .student-area, which the
+   admin shell never has, so the placeholder collapsed into the card corner. */
+.admin-shell .home-item-visual {
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  background: #f2f8fd;
+  border-bottom: 1px solid #e5eff7;
+}
+.admin-shell .home-item-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+.admin-shell .home-no-photo {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid #d2e5f5;
+  background: #fff;
+  color: #0759a6;
+  font-size: 24px;
+}
+.admin-shell .home-no-photo-label {
+  margin-left: 9px;
+  color: #6e8aa2;
+  font-size: 11px;
+}
+:root[data-theme="dark"] .admin-shell .home-item-visual {
+  background: #0f2236;
+  border-bottom-color: #294159;
+}
+:root[data-theme="dark"] .admin-shell .home-no-photo {
+  background: #12304d;
+  border-color: #294159;
+  color: #5aa9f0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .admin-shell .home-item-visual {
+    background: #0f2236;
+    border-bottom-color: #294159;
+  }
+  :root:not([data-theme="light"]) .admin-shell .home-no-photo {
+    background: #12304d;
+    border-color: #294159;
+    color: #5aa9f0;
+  }
+}

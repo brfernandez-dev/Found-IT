@@ -1,0 +1,681 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<%- include('../partials/flash') %>
+
+
+
+
+<section class="section report-section campus-interior-section">
+
+  <div class="container">
+
+    <% if (errors.length) { %>
+
+      <ul class="errors">
+
+        <% errors.forEach(e => { %>
+
+          <li><%= e %></li>
+
+        <% }) %>
+
+      </ul>
+
+    <% } %>
+
+
+    <% if (sourceLostItem) { %>
+
+      <div
+        style="
+          margin-bottom:18px;
+          padding:15px 17px;
+          border:1px solid #cfe0ef;
+          border-radius:12px;
+          background:#f4f8fc;
+        "
+      >
+
+        <strong>
+          You are reporting a found item for this lost report.
+        </strong>
+
+        <p
+          style="
+            margin:5px 0 0;
+            color:var(--muted);
+            font-size:13px;
+          "
+        >
+          Lost item:
+          <strong>
+            <%= sourceLostItem.title %>
+          </strong>
+          ·
+          <%= sourceLostItem.reference_no %>
+        </p>
+
+      </div>
+
+    <% } %>
+
+
+    <div class="report-grid">
+
+
+      <!-- ========================================= -->
+      <!-- FORM -->
+      <!-- ========================================= -->
+
+      <form
+        class="report-card"
+        method="post"
+        action="/items"
+        enctype="multipart/form-data"
+      >
+
+
+        <!-- IMPORTANT:
+             Keeps the found report connected
+             to the original lost report.
+        -->
+
+        <% if (sourceLostItem) { %>
+
+          <input
+            type="hidden"
+            name="relatedLostItemId"
+            value="<%= sourceLostItem.id %>"
+          >
+
+        <% } %>
+
+
+        <!-- ========================================= -->
+        <!-- STEP 1 -->
+        <!-- ========================================= -->
+
+        <div class="report-step">
+
+          <span class="step-num">
+            01
+          </span>
+
+          <div class="report-step-body">
+
+            <h2 class="report-step-title">
+              Is it lost or found?
+            </h2>
+
+            <p class="muted">
+              Pick one. You can edit this later.
+            </p>
+
+
+            <div
+              class="segmented"
+              role="radiogroup"
+              aria-label="Type"
+            >
+
+              <label class="segmented-option">
+
+                <input
+                  type="radio"
+                  name="type"
+                  value="lost"
+                  required
+                  <%= values.type === 'lost'
+                    ? 'checked'
+                    : '' %>
+                >
+
+                <span class="segmented-face">
+
+                  <strong>
+                    I lost something
+                  </strong>
+
+                  <em>
+                    Ask the community for help
+                  </em>
+
+                </span>
+
+              </label>
+
+
+              <label class="segmented-option">
+
+                <input
+                  type="radio"
+                  name="type"
+                  value="found"
+                  <%= values.type === 'found'
+                    ? 'checked'
+                    : '' %>
+                >
+
+                <span class="segmented-face">
+
+                  <strong>
+                    I found something
+                  </strong>
+
+                  <em>
+                    Help return it to its owner
+                  </em>
+
+                </span>
+
+              </label>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- STEP 2 -->
+        <!-- ========================================= -->
+
+        <div class="report-step">
+
+          <span class="step-num">
+            02
+          </span>
+
+          <div class="report-step-body">
+
+            <h2 class="report-step-title">
+              What are the details?
+            </h2>
+
+            <p class="muted">
+              Short and specific works best.
+            </p>
+
+
+            <label for="title">
+              Title
+            </label>
+
+            <input
+              id="title"
+              name="title"
+              maxlength="150"
+              placeholder="e.g. Black iPhone 13 with a cracked screen"
+              value="<%= values.title || '' %>"
+              required
+            >
+
+
+            <div class="field-row">
+
+              <div>
+
+                <label for="category">
+                  Category
+                </label>
+
+                <select
+                  id="category"
+                  name="category"
+                  required
+                >
+
+                  <option value="">
+                    Choose…
+                  </option>
+
+                  <% categories.forEach(c => { %>
+
+                    <option
+                      value="<%= c %>"
+                      <%= values.category === c
+                        ? 'selected'
+                        : '' %>
+                    >
+                      <%= c %>
+                    </option>
+
+                  <% }); %>
+
+                </select>
+
+              </div>
+
+
+              <div>
+
+                <label for="location">
+                  Location
+                </label>
+
+                <input
+                  id="location"
+                  name="location"
+                  maxlength="150"
+                  placeholder="e.g. Library, 2nd floor"
+                  value="<%= values.location || '' %>"
+                  required
+                >
+
+              </div>
+
+            </div>
+
+
+            <label for="description">
+              Description
+            </label>
+
+            <textarea
+              id="description"
+              name="description"
+              rows="5"
+              maxlength="2000"
+              placeholder="Colour, brand, distinguishing marks, when you last saw it…"
+              required
+            ><%= values.description || '' %></textarea>
+
+          </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- STEP 3 -->
+        <!-- ========================================= -->
+
+        <div class="report-step">
+
+          <span class="step-num">
+            03
+          </span>
+
+          <div class="report-step-body">
+
+            <h2 class="report-step-title">
+
+              Add a photo
+
+              <span class="muted">
+                (optional)
+              </span>
+
+            </h2>
+
+
+            <p class="muted">
+              Upload a photo of the item to help others identify it.
+            </p>
+
+
+            <label for="image">
+              Item Photo
+            </label>
+
+
+            <div class="photo-upload-control">
+
+              <input
+                class="photo-input"
+                type="file"
+                id="image"
+                name="image"
+                accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+                aria-describedby="image-filename image-help"
+              >
+
+              <label
+                class="btn btn-ghost photo-upload"
+                for="image"
+              >
+                Upload photo
+              </label>
+
+              <span
+                class="photo-filename muted small"
+                id="image-filename"
+                aria-live="polite"
+              >
+                No photo selected
+              </span>
+
+            </div>
+
+
+            <p
+              class="muted small"
+              id="image-help"
+            >
+              Accepted formats: PNG, JPG, JPEG, and WEBP.
+              Maximum size: 5 MB.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- ACTIONS -->
+        <!-- ========================================= -->
+
+        <div class="report-actions">
+
+          <a
+            class="btn btn-ghost"
+            href="/items"
+          >
+            Cancel
+          </a>
+
+          <button
+            class="btn btn-dark btn-lg"
+            type="submit"
+          >
+            Submit report
+
+            <span aria-hidden="true">
+              ➤
+            </span>
+          </button>
+
+        </div>
+
+
+      </form>
+
+
+      <!-- ========================================= -->
+      <!-- SIDE PREVIEW -->
+      <!-- ========================================= -->
+
+      <aside
+        class="report-aside"
+        aria-label="Tips and preview"
+      >
+
+
+        <div class="aside-card">
+
+          <span class="pill pill-sm">
+            LIVE PREVIEW
+          </span>
+
+
+          <div class="preview-card">
+
+            <div
+              class="item-thumb item-thumb-lost"
+              id="preview-thumb"
+            ></div>
+
+
+            <div class="item-body">
+
+              <span
+                class="tag tag-unclaimed"
+                id="preview-type"
+              >
+                unclaimed
+              </span>
+
+
+              <h3 id="preview-title">
+                Your item title
+              </h3>
+
+
+              <p
+                class="muted"
+                id="preview-loc"
+              >
+                Location will appear here
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <p class="muted small">
+            This is roughly how your report will look on the browse page.
+          </p>
+
+        </div>
+
+
+        <!-- TIPS -->
+
+        <div class="aside-card">
+
+          <span class="pill pill-sm">
+            TIPS
+          </span>
+
+
+          <ul class="tips">
+
+            <li>
+              <strong>Be specific.</strong>
+              "Blue North Face backpack" beats "bag".
+            </li>
+
+            <li>
+              <strong>Say where.</strong>
+              Building + floor helps matches.
+            </li>
+
+            <li>
+              <strong>Skip private info.</strong>
+              Don't post your ID number or address.
+            </li>
+
+            <li>
+              <strong>Lost vs Found.</strong>
+              Lost = you miss it. Found = you have it.
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <!-- HELP -->
+
+        <div class="aside-card help-card">
+
+          <span class="pill pill-sm">
+            NEED HELP?
+          </span>
+
+          <p>
+
+            Read the
+            <a href="/help">
+              Help page
+            </a>
+
+            or email
+
+            <a href="mailto:help@reunite.local">
+              help@reunite.local
+            </a>.
+
+          </p>
+
+        </div>
+
+
+      </aside>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<script>
+
+(function () {
+
+  const $ = id =>
+    document.getElementById(id);
+
+
+  const title =
+    $('title');
+
+  const loc =
+    $('location');
+
+  const type =
+    document.querySelectorAll(
+      'input[name="type"]'
+    );
+
+
+  const pTitle =
+    $('preview-title');
+
+  const pLoc =
+    $('preview-loc');
+
+  const pType =
+    $('preview-type');
+
+  const pThumb =
+    $('preview-thumb');
+
+  const image =
+    $('image');
+
+  const imageFilename =
+    $('image-filename');
+
+
+  function update() {
+
+    pTitle.textContent =
+      title.value.trim() ||
+      'Your item title';
+
+
+    pLoc.textContent =
+      loc.value.trim() ||
+      'Location will appear here';
+
+
+    const selected =
+      document.querySelector(
+        'input[name="type"]:checked'
+      );
+
+
+    const value =
+      selected
+        ? selected.value
+        : '';
+
+
+    pType.textContent =
+      value === 'lost'
+        ? 'lost'
+        : value === 'found'
+          ? 'found'
+          : 'unclaimed';
+
+
+    pThumb.className =
+      'item-thumb ' +
+      (
+        value === 'found'
+          ? 'item-thumb-found'
+          : 'item-thumb-lost'
+      );
+
+  }
+
+
+  title.addEventListener(
+    'input',
+    update
+  );
+
+
+  loc.addEventListener(
+    'input',
+    update
+  );
+
+
+  type.forEach(
+    radio => {
+
+      radio.addEventListener(
+        'change',
+        update
+      );
+
+    }
+  );
+
+
+  image.addEventListener(
+    'change',
+    () => {
+
+      imageFilename.textContent =
+        image.files && image.files.length
+          ? image.files[0].name
+          : 'No photo selected';
+
+      const previousPreview = pThumb.querySelector('img');
+      if (previousPreview) {
+        if (previousPreview.dataset.objectUrl) {
+          URL.revokeObjectURL(previousPreview.dataset.objectUrl);
+        }
+        previousPreview.remove();
+      }
+
+      if (image.files && image.files[0]) {
+        const file = image.files[0];
+        const allowed = ['image/png', 'image/jpeg', 'image/webp'];
+        if (!allowed.includes(file.type)) {
+          image.value = '';
+          imageFilename.textContent = 'Unsupported file type';
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          image.value = '';
+          imageFilename.textContent = 'File is larger than 5 MB';
+          return;
+        }
+        const objectUrl = URL.createObjectURL(file);
+        const previewImage = document.createElement('img');
+        previewImage.src = objectUrl;
+        previewImage.alt = 'Selected item photo preview';
+        previewImage.dataset.objectUrl = objectUrl;
+        previewImage.style.cssText = 'width:100%;height:100%;object-fit:contain;border-radius:8px;';
+        pThumb.appendChild(previewImage);
+      }
+
+    }
+  );
+
+
+  update();
+
+})();
+
+</script>
+
+
+<script src="/js/camera.js" defer></script>
+<%- include('../partials/foot') %>

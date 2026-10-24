@@ -1,0 +1,553 @@
+/* ==========================================================================
+   Found IT! — student polish layer
+   Loaded AFTER student/style.css. Everything here is additive: it refines
+   spacing, motion, focus, touch targets, the mobile menu, and the new home
+   sections without rewriting the main stylesheet.
+   ========================================================================== */
+
+:root {
+  --ring: #2f8bea;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --shadow-lift: 0 12px 30px rgba(9, 46, 89, 0.14);
+}
+
+/* Explicit dark mode used pure black for both page and cards, so cards and
+   page merged together. Use the same navy palette as the OS-dark default. */
+:root[data-theme="dark"] {
+  --bg: #091522;
+  --surface: #102238;
+  --ring: #6db6ff;
+  --shadow-lift: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ring: #6db6ff;
+    --shadow-lift: 0 12px 30px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* ---------- Base ---------- */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img {
+  max-width: 100%;
+}
+::selection {
+  background: #cfe2f5;
+  color: #092e59;
+}
+
+/* ---------- Accessibility ---------- */
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -64px;
+  z-index: 1000;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #092e59;
+  color: #fff;
+  font-weight: 700;
+  transition: top 0.15s var(--ease);
+}
+.skip-link:focus {
+  top: 12px;
+  color: #fff;
+  text-decoration: none;
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+#main-content:focus {
+  outline: none;
+}
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  transition:
+    transform 0.18s var(--ease),
+    box-shadow 0.18s var(--ease),
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+.btn:hover {
+  box-shadow: 0 6px 16px rgba(9, 46, 89, 0.18);
+}
+.btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+}
+.btn-light {
+  background: #fff;
+  color: #092e59;
+  border-color: #fff;
+}
+.btn-light:hover {
+  background: #eaf5ff;
+  color: #073b70;
+}
+
+/* Submit buttons show progress after click (set by js/enhance.js) */
+button.is-loading,
+.btn.is-loading {
+  pointer-events: none;
+  opacity: 0.85;
+}
+button.is-loading::after,
+.btn.is-loading::after {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 8px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  vertical-align: -2px;
+  animation: fi-spin 0.7s linear infinite;
+}
+@keyframes fi-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Cards ---------- */
+.item-card,
+.lost-found-card {
+  transition:
+    transform 0.22s var(--ease),
+    box-shadow 0.22s var(--ease),
+    border-color 0.22s ease;
+}
+@media (hover: hover) {
+  .item-card:hover,
+  .lost-found-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+.recent-grid .empty {
+  grid-column: 1 / -1;
+  padding: 36px 20px;
+  text-align: center;
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+/* ---------- Flash messages ---------- */
+.flash {
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+.flash.is-leaving {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* ---------- Password reveal (js/enhance.js) ---------- */
+.pw-toggle {
+  position: absolute;
+  right: 8px;
+  transform: translateY(-50%);
+  min-width: 48px;
+  height: 34px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #3f6a91;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.pw-toggle:hover {
+  background: rgba(23, 102, 177, 0.1);
+}
+.has-pw-toggle input {
+  padding-right: 64px !important;
+}
+
+/* ---------- Back to top (js/enhance.js) ---------- */
+.to-top {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 60;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #092e59;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(9, 46, 89, 0.3);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+.to-top.is-visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* ---------- Home: steps + call to action ---------- */
+.home-section-head {
+  margin-bottom: 22px;
+}
+.home-section-head h2 {
+  margin: 8px 0 4px;
+}
+.home-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 34px 38px;
+  border-radius: 20px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.16), transparent 45%),
+    linear-gradient(135deg, #092e59 0%, #1766b1 100%);
+  box-shadow: var(--shadow-lift);
+}
+.home-cta h2 {
+  margin: 0 0 6px;
+  color: #fff;
+  font-size: clamp(22px, 3vw, 30px);
+  letter-spacing: -0.02em;
+}
+.home-cta p {
+  margin: 0;
+  max-width: 52ch;
+  color: rgba(255, 255, 255, 0.86);
+}
+.home-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.home-cta .btn-campus-outline,
+.home-cta .btn-outline-light {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+}
+.home-cta .btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ---------- Error pages ---------- */
+.error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+/* ---------- Mobile menu ---------- */
+.nav-toggle {
+  display: none;
+}
+
+@media (max-width: 820px) {
+  .student-area .campus-nav-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 64px;
+  }
+
+  .js .nav-toggle {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    padding: 0 11px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    cursor: pointer;
+  }
+  .nav-toggle-bar {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: #073b70;
+    transition:
+      transform 0.2s ease,
+      opacity 0.2s ease;
+  }
+  :root[data-theme="dark"] .nav-toggle-bar {
+    background: #e5e7eb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .nav-toggle-bar {
+      background: #e5e7eb;
+    }
+  }
+  .nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Collapsed by default only when JS can open it again */
+  .js .student-area .main-nav {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 8px 0 6px;
+    border-top: 1px solid var(--line);
+  }
+  .js .student-area .main-nav.is-open {
+    display: flex;
+  }
+  .student-area .main-nav > a:not(.btn) {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+  .student-area .main-nav .btn,
+  .student-area .main-nav form {
+    width: 100%;
+  }
+  .student-area .main-nav .nav-user-label {
+    display: inline;
+  }
+  /* The dark-mode switch was hidden on small screens; bring it back here */
+  .student-area .main-nav .theme-toggle-btn {
+    display: inline-flex;
+  }
+
+  .home-cta {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px 24px;
+  }
+}
+
+/* ---------- Phones ---------- */
+@media (max-width: 760px) {
+  /* 16px stops iOS Safari from zooming in when a field is focused */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* ---------- Touch devices ---------- */
+@media (pointer: coarse) {
+  .btn {
+    min-height: 44px;
+  }
+  .foot-links a {
+    display: inline-block;
+    padding: 8px 4px;
+  }
+}
+
+/* ---------- Respect reduced-motion settings ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  .skip-link,
+  .nav-toggle,
+  .to-top {
+    display: none !important;
+  }
+}
+
+/* ---------- Dark-mode contrast fix ----------
+   Section headings (e.g. "Recent campus reports") kept their light-mode navy
+   and nearly vanished on the dark background. */
+:root[data-theme="dark"] .student-area .section-head h2,
+:root[data-theme="dark"] .student-area .section-head h3 {
+  color: var(--ink);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .student-area .section-head h2,
+  :root:not([data-theme="light"]) .student-area .section-head h3 {
+    color: var(--ink);
+  }
+}
+
+/* ---------- Online now + "Posted by" ---------- */
+.online-panel {
+  margin: 0 0 22px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.online-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-bottom: 12px;
+}
+.online-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 17px;
+  color: var(--ink);
+}
+.online-head p {
+  margin: 0;
+  font-size: 13px;
+}
+.online-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+}
+.online-count {
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: var(--lav, #e8f2fc);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+.online-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.online-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 5px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+}
+.online-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #1766b1;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.online-name em {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 12px;
+}
+.online-role {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #092e59;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.online-more {
+  margin: 10px 0 0;
+  font-size: 13px;
+}
+
+.item-poster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.item-poster strong {
+  color: var(--ink);
+}
+.item-poster-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #1766b1;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.item-poster-line {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.item-poster-line strong,
+.detail-poster strong {
+  color: var(--ink);
+}
+.detail-poster {
+  margin: 4px 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+}

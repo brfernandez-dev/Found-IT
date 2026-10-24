@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title><%= title %> | Found IT!</title>
+
+  <script>
+    // Apply the saved light/dark choice before the page paints
+    // (same as partials/head.ejs).
+    (function () {
+      try {
+        var t = localStorage.getItem('reunite-theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <link
+    rel="stylesheet"
+    href="/css/student/style.css"
+  >
+
+  <style>
+
+    .found-page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 20px 50px;
+    }
+
+    .found-header {
+      margin-bottom: 24px;
+    }
+
+    .found-back {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: var(--purple);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .found-back:hover {
+      text-decoration: underline;
+    }
+
+    .found-header h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+
+    .found-header p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* =================================================
+       ORIGINAL LOST ITEM
+       ================================================= */
+
+    .lost-reference {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      padding: 18px;
+      margin-bottom: 22px;
+
+      border: 1px solid var(--line);
+      border-radius: 16px;
+
+      background: var(--bg);
+    }
+
+    .lost-reference-image {
+      width: 120px;
+      height: 100px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--lav);
+    }
+
+    .lost-reference-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .lost-reference-no-image {
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .lost-reference-label {
+      display: inline-block;
+      margin-bottom: 6px;
+
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+
+      color: #b45309;
+    }
+
+    .lost-reference h2 {
+      margin: 0 0 7px;
+      font-size: 19px;
+    }
+
+    .lost-reference p {
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* =================================================
+       FORM CARD
+       ================================================= */
+
+    .found-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 28px;
+
+      box-shadow:
+        0 8px 25px rgba(15, 23, 42, .06);
+    }
+
+    .found-card h2 {
+      margin: 0 0 7px;
+      font-size: 22px;
+    }
+
+    .found-card-intro {
+      margin: 0 0 24px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* =================================================
+       ERRORS
+       ================================================= */
+
+    .found-errors {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+
+      border-radius: 12px;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+
+      color: #9f1239;
+    }
+
+    .found-errors ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .found-errors li {
+      margin: 4px 0;
+    }
+
+    /* =================================================
+       FORM
+       ================================================= */
+
+    .found-form {
+      display: grid;
+      gap: 20px;
+    }
+
+    .found-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .found-field label {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .found-field small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .found-field input,
+    .found-field textarea {
+      width: 100%;
+      box-sizing: border-box;
+
+      border: 1px solid var(--line);
+      border-radius: 11px;
+
+      padding: 12px 13px;
+
+      font: inherit;
+      color: var(--ink);
+      background: var(--surface);
+
+      outline: none;
+      transition: .2s ease;
+    }
+
+    .found-field input:focus,
+    .found-field textarea:focus {
+      border-color: var(--purple);
+      box-shadow:
+        0 0 0 3px rgba(7, 68, 236, .10);
+    }
+
+    .found-field textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .found-field input[type="file"] {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    /* =================================================
+       READONLY ITEM INFORMATION
+       ================================================= */
+
+    .item-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 4px;
+    }
+
+    .item-info-box {
+      padding: 13px 14px;
+
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+    }
+
+    .item-info-box span {
+      display: block;
+      margin-bottom: 4px;
+
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+
+      color: var(--muted);
+    }
+
+    .item-info-box strong {
+      color: var(--ink);
+    }
+
+    /* =================================================
+       IMAGE PREVIEW
+       ================================================= */
+
+    .image-preview {
+      display: none;
+      margin-top: 10px;
+
+      max-width: 300px;
+      max-height: 220px;
+
+      border-radius: 12px;
+      border: 1px solid var(--line);
+
+      object-fit: contain;
+    }
+
+    /* =================================================
+       ACTIONS
+       ================================================= */
+
+    .found-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+
+      padding-top: 6px;
+    }
+
+    .found-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 44px;
+      padding: 0 20px;
+
+      border-radius: 10px;
+
+      font: inherit;
+      font-weight: 700;
+
+      text-decoration: none;
+      cursor: pointer;
+
+      border: none;
+    }
+
+    .found-btn-cancel {
+      background: var(--lav);
+      color: var(--ink);
+    }
+
+    .found-btn-submit {
+      background: var(--purple);
+      color: #fff;
+    }
+
+    .found-btn-submit:hover {
+      background: var(--purple-2);
+    }
+
+    /* =================================================
+       RESPONSIVE
+       ================================================= */
+
+    @media (max-width: 650px) {
+
+      .found-page {
+        padding: 20px 14px 40px;
+      }
+
+      .found-card {
+        padding: 20px;
+      }
+
+      .lost-reference {
+        grid-template-columns: 1fr;
+      }
+
+      .lost-reference-image {
+        width: 100%;
+        height: 180px;
+      }
+
+      .item-info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .found-actions {
+        flex-direction: column-reverse;
+      }
+
+      .found-btn {
+        width: 100%;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <%- include('../partials/nav') %>
+
+  <main class="found-page">
+
+    <!-- HEADER -->
+
+    <div class="found-header">
+
+      <a
+        href="/items/<%= lostItem.id %>"
+        class="found-back"
+      >
+        ← Back to lost item
+      </a>
+
+      <h1>I Found It</h1>
+
+      <p>
+        If you found this item, use this form to tell us
+        where and how you found it. Your report goes
+        privately to the owner of the lost item and the admin.
+        It will not be posted on the campus board.
+      </p>
+
+    </div>
+
+
+    <!-- ORIGINAL LOST ITEM -->
+
+    <section class="lost-reference">
+
+      <div class="lost-reference-image">
+
+        <% if (lostItem.image_url) { %>
+
+          <img
+            src="<%= lostItem.image_url %>"
+            alt="<%= lostItem.title %>"
+          >
+
+        <% } else { %>
+
+          <div class="lost-reference-no-image">
+            No photo available
+          </div>
+
+        <% } %>
+
+      </div>
+
+
+      <div>
+
+        <span class="lost-reference-label">
+          Responding to lost item
+        </span>
+
+        <h2>
+          <%= lostItem.title %>
+        </h2>
+
+        <p>
+          <strong>Category:</strong>
+          <%= lostItem.category || 'Other' %>
+        </p>
+
+        <p>
+          <strong>Last reported location:</strong>
+          <%= lostItem.location || 'Not specified' %>
+        </p>
+
+        <p>
+          <strong>Reference:</strong>
+          <%= lostItem.reference_no %>
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- FORM -->
+
+    <section class="found-card">
+
+      <h2>Tell us what you found</h2>
+
+      <p class="found-card-intro">
+        You don't need to report the item again from scratch.
+        Just provide the information about where you found it
+        and what you observed.
+      </p>
+
+
+      <% if (errors && errors.length) { %>
+
+        <div class="found-errors">
+
+          <ul>
+
+            <% errors.forEach(function(error) { %>
+
+              <li>
+                <%= error %>
+              </li>
+
+            <% }) %>
+
+          </ul>
+
+        </div>
+
+      <% } %>
+
+
+      <!-- ORIGINAL ITEM INFO -->
+
+      <div class="item-info-grid">
+
+        <div class="item-info-box">
+
+          <span>Item</span>
+
+          <strong>
+            <%= lostItem.title %>
+          </strong>
+
+        </div>
+
+        <div class="item-info-box">
+
+          <span>Category</span>
+
+          <strong>
+            <%= lostItem.category || 'Other' %>
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <form
+        class="found-form"
+        method="POST"
+        action="/items/<%= lostItem.id %>/found"
+        enctype="multipart/form-data"
+      >
+
+        <!-- WHERE FOUND -->
+
+        <div class="found-field">
+
+          <label for="location">
+            Where did you find it?
+          </label>
+
+          <small>
+            Give the location where you actually found the item.
+          </small>
+
+          <input
+            id="location"
+            type="text"
+            name="location"
+            maxlength="150"
+            value="<%= values.location || '' %>"
+            placeholder="Example: Near the library entrance"
+            required
+          >
+
+        </div>
+
+
+        <!-- DATE FOUND -->
+
+        <div class="found-field">
+
+          <label for="dateFound">
+            When did you find it?
+          </label>
+
+          <input
+            id="dateFound"
+            type="date"
+            name="dateFound"
+            value="<%= values.dateFound || '' %>"
+          >
+
+        </div>
+
+
+        <!-- DESCRIPTION -->
+
+        <div class="found-field">
+
+          <label for="description">
+            Describe what you found
+          </label>
+
+          <small>
+            Tell us about the condition, appearance, or any
+            details you noticed.
+          </small>
+
+          <textarea
+            id="description"
+            name="description"
+            maxlength="2000"
+            placeholder="Example: I found a black wallet under one of the chairs. It contains several cards and appears to be in good condition."
+            required
+          ><%= values.description || '' %></textarea>
+
+        </div>
+
+
+        <!-- IMAGE -->
+
+        <div class="found-field">
+
+          <label for="image">
+            Photo of the item
+          </label>
+
+          <small>
+            Upload a clear photo if possible.
+            PNG, JPG, JPEG, or WEBP. Maximum 5MB.
+          </small>
+
+          <input
+            id="image"
+            type="file"
+            name="image"
+            accept="image/png,image/jpeg,image/jpg,image/webp"
+          >
+
+          <img
+            id="imagePreview"
+            class="image-preview"
+            alt="Image preview"
+          >
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="found-actions">
+
+          <a
+            href="/items/<%= lostItem.id %>"
+            class="found-btn found-btn-cancel"
+          >
+            Cancel
+          </a>
+
+          <button
+            type="submit"
+            class="found-btn found-btn-submit"
+          >
+            Submit Found Report
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  </main>
+
+
+  <script>
+
+    const imageInput =
+      document.getElementById('image');
+
+    const imagePreview =
+      document.getElementById('imagePreview');
+
+
+    if (imageInput && imagePreview) {
+
+      imageInput.addEventListener(
+        'change',
+        function () {
+
+          const file =
+            this.files &&
+            this.files[0];
+
+          if (!file) {
+
+            imagePreview.style.display =
+              'none';
+
+            imagePreview.removeAttribute(
+              'src'
+            );
+
+            return;
+          }
+
+          const reader =
+            new FileReader();
+
+          reader.onload =
+            function (event) {
+
+              imagePreview.src =
+                event.target.result;
+
+              imagePreview.style.display =
+                'block';
+
+            };
+
+          reader.readAsDataURL(file);
+
+        }
+      );
+
+    }
+
+  </script>
+
+<script src="/js/camera.js" defer></script>
+<%- include('../partials/foot') %>

@@ -1,0 +1,77 @@
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="admin-sidebar" aria-label="Admin navigation">
+    <a class="admin-brand" href="/admin/campus-board">
+      <img src="/images/cspc-logo.png" alt="" class="brand-logo">
+      <span>
+        <strong>Found IT!</strong>
+        <small>ADMIN CONSOLE</small>
+      </span>
+    </a>
+
+    <div class="admin-nav-label">WORKSPACE</div>
+    <nav class="admin-nav" aria-label="Admin">
+      <a class="admin-nav-link <%= currentPath === '/admin/campus-board' || currentPath === '/items' || (currentPath.indexOf('/items/') === 0 && currentPath !== '/items/new') ? 'active' : '' %>" href="/admin/campus-board" <% if (currentPath === '/admin/campus-board' || currentPath === '/items' || (currentPath.indexOf('/items/') === 0 && currentPath !== '/items/new')) { %>aria-current="page"<% } %>>
+        <span class="admin-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span>
+        <span>Campus board</span>
+      </a>
+      <a class="admin-nav-link <%= currentPath === '/items/new' ? 'active' : '' %>" href="/items/new" <% if (currentPath === '/items/new') { %>aria-current="page"<% } %>>
+        <span class="admin-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></span>
+        <span>Report an item</span>
+      </a>
+      <a class="admin-nav-link <%= currentPath === '/admin/trash' ? 'active' : '' %>" href="/admin/trash"><span class="admin-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M6 7V4h12v3M5 7l1 13h12l1-13M9 11v5M15 11v5"/></svg></span><span>Trash</span></a>
+      <a class="admin-nav-link <%= currentPath === '/notifications' || currentPath.indexOf('/notifications/') === 0 ? 'active' : '' %>" href="/notifications" <% if (currentPath === '/notifications' || currentPath.indexOf('/notifications/') === 0) { %>aria-current="page"<% } %>>
+        <span class="admin-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span>
+        <span>Notifications</span>
+      </a>
+    </nav>
+
+    <div class="admin-nav-label admin-nav-label-secondary">CAMPUS</div>
+    <nav class="admin-nav" aria-label="Campus information">
+      <a class="admin-nav-link <%= currentPath === '/how-it-works' ? 'active' : '' %>" href="/how-it-works">
+        <span class="admin-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg></span>
+        <span>How it works</span>
+      </a>
+      <a class="admin-nav-link <%= currentPath === '/help' ? 'active' : '' %>" href="/help">
+        <span class="admin-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.5 1.5c-1.1 1.1-2.1 1.4-2.1 3M12 17.5h.01"/></svg></span>
+        <span>Help</span>
+      </a>
+      <a class="admin-nav-link <%= currentPath === '/about' ? 'active' : '' %>" href="/about">
+        <span class="admin-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg></span>
+        <span>About Found IT!</span>
+      </a>
+    </nav>
+
+    <div class="admin-sidebar-bottom">
+      <div class="admin-nav-label">ACCOUNT</div>
+      <a class="admin-nav-link <%= currentPath === '/settings' ? 'active' : '' %>" href="/settings" <% if (currentPath === '/settings') { %>aria-current="page"<% } %>>
+        <span class="admin-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19 13.5a7 7 0 0 0 0-3l2-1.5-2-3.5-2.4.7a7 7 0 0 0-2.6-1.5L13.5 2h-4L9 4.7a7 7 0 0 0-2.6 1.5L4 5.5 2 9l2 1.5a7 7 0 0 0 0 3L2 15l2 3.5 2.4-.7A7 7 0 0 0 9 19.3l.5 2.7h4l.5-2.7a7 7 0 0 0 2.6-1.5l2.4.7 2-3.5z"/></svg></span>
+        <span>Settings</span>
+      </a>
+      <a class="admin-user-card <%= currentPath === '/profile' ? 'active' : '' %>" href="/profile">
+        <% if (currentUser.profileImage) { %>
+          <img class="admin-user-avatar" src="<%= currentUser.profileImage %>" alt="">
+        <% } else { %>
+          <span class="admin-user-avatar" aria-hidden="true"><%= currentUser.displayName.charAt(0).toUpperCase() %></span>
+        <% } %>
+        <span class="admin-user-info">
+          <strong><%= currentUser.displayName %></strong>
+          <small>Staff administrator</small>
+        </span>
+      </a>
+      <div class="admin-sidebar-actions">
+        <button type="button" class="admin-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Toggle dark mode">
+          <span aria-hidden="true">◐</span> Theme
+        </button>
+        <form method="post" action="/logout">
+          <button class="admin-logout" type="submit" aria-label="Log out">↗</button>
+        </form>
+      </div>
+    </div>
+  </aside>
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="admin-menu-toggle" type="button" aria-controls="admin-sidebar" aria-expanded="false" aria-label="Open navigation">
+        <span aria-hidden="true">☰</span>
+      </button>
+      <div class="admin-breadcrumb"><span>Workspace</span><span aria-hidden="true">/</span><strong><%= currentPath === '/admin/campus-board' || currentPath === '/items' ? 'Campus board' : currentPath === '/admin' ? 'Campus board' : currentPath === '/admin/trash' ? 'Trash' : currentPath === '/items/new' ? 'Report an item' : currentPath.indexOf('/items/') === 0 ? 'Report details' : currentPath === '/settings' ? 'Settings' : currentPath === '/notifications' ? 'Notifications' : currentPath === '/help' ? 'Help' : currentPath === '/about' ? 'About Found IT!' : currentPath === '/how-it-works' ? 'How it works' : 'Profile' %></strong></div>
+    </header>

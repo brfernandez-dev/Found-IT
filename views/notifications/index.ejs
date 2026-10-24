@@ -1,0 +1,136 @@
+<%- include("../partials/head") %>
+<%- include("../partials/nav") %>
+<%- include("../partials/flash") %>
+
+<%
+  // Who sent the notification. Students show their own name; staff and
+  // system messages show as the Found IT! Admin.
+  function senderOf(n) {
+    if (n.sender_role === "user" && n.sender_name) {
+      return { name: n.sender_name, badge: "Student", kind: "student", image: n.sender_image };
+    }
+    return { name: "Found IT! Admin", badge: "Admin", kind: "admin", image: null };
+  }
+
+  // When we know which student sent it, "Someone submitted a claim..." becomes
+  // "Submitted a claim..." because their name is already shown above it.
+  function messageOf(n, sender) {
+    var text = String(n.message || "");
+    if (sender.kind === "student" && /^Someone /.test(text)) {
+      text = text.replace(/^Someone /, "");
+      text = text.charAt(0).toUpperCase() + text.slice(1);
+    }
+    return text;
+  }
+
+  function initials(name) {
+    return String(name || "?").trim().split(/\s+/).slice(0, 2)
+      .map(function (part) { return part.charAt(0).toUpperCase(); }).join("") || "?";
+  }
+
+  function timeAgo(value) {
+    var seconds = Math.floor((Date.now() - new Date(value).getTime()) / 1000);
+    if (seconds < 60) return "Just now";
+    var minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return minutes + "m ago";
+    var hours = Math.floor(minutes / 60);
+    if (hours < 24) return hours + "h ago";
+    var days = Math.floor(hours / 24);
+    if (days < 7) return days + "d ago";
+    return new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  }
+
+  function groupOf(value) {
+    var date = new Date(value);
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    var yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
+    if (date >= today) return "Today";
+    if (date >= yesterday) return "Yesterday";
+    return "Earlier";
+  }
+
+  var lastGroup = null;
+%>
+
+<main class="container notifications-page">
+  <header class="notif-header">
+    <div>
+      <h1>Notifications</h1>
+      <p class="notif-subtitle">
+        <% if (unreadCount > 0) { %>
+          You have <strong><%= unreadCount %></strong> unread notification<%= unreadCount === 1 ? "" : "s" %>.
+        <% } else { %>
+          You're all caught up.
+        <% } %>
+      </p>
+    </div>
+
+    <% if (unreadCount > 0) { %>
+      <form method="POST" action="/notifications/read-all">
+        <button type="submit" class="notif-mark-all">Mark all as read</button>
+      </form>
+    <% } %>
+  </header>
+
+  <nav class="notif-tabs" aria-label="Filter notifications">
+    <a href="/notifications" class="notif-tab <%= filter === 'all' ? 'active' : '' %>" <%- filter === 'all' ? 'aria-current="page"' : '' %>>All</a>
+    <a href="/notifications?filter=unread" class="notif-tab <%= filter === 'unread' ? 'active' : '' %>" <%- filter === 'unread' ? 'aria-current="page"' : '' %>>
+      Unread<% if (unreadCount > 0) { %> <span class="notif-tab-count"><%= unreadCount %></span><% } %>
+    </a>
+  </nav>
+
+  <% if (notifications.length > 0) { %>
+    <div class="notif-list">
+      <% notifications.forEach(function (n) {
+           var sender = senderOf(n);
+           var group = groupOf(n.created_at);
+      %>
+        <% if (group !== lastGroup) { lastGroup = group; %>
+          <h2 class="notif-group"><%= group %></h2>
+        <% } %>
+
+        <a class="notif <%= n.is_read ? 'is-read' : 'is-unread' %>"
+           href="/notifications/<%= n.id %>/open"
+           aria-label="<%= (n.is_read ? '' : 'Unread. ') + sender.name + ': ' + n.message %>">
+
+          <span class="notif-avatar notif-avatar--<%= sender.kind %>" aria-hidden="true">
+            <% if (sender.kind === "admin") { %>
+              <img src="/images/cspc-logo.png" alt="">
+            <% } else if (sender.image) { %>
+              <img src="<%= sender.image %>" alt="">
+            <% } else { %>
+              <%= initials(sender.name) %>
+            <% } %>
+          </span>
+
+          <span class="notif-body">
+            <span class="notif-from">
+              <strong><%= sender.name %></strong>
+              <span class="notif-badge notif-badge--<%= sender.kind %>"><%= sender.badge %></span>
+            </span>
+            <span class="notif-text"><%= messageOf(n, sender) %></span>
+            <time class="notif-time" datetime="<%= new Date(n.created_at).toISOString() %>"
+                  title="<%= new Date(n.created_at).toLocaleString() %>"><%= timeAgo(n.created_at) %></time>
+          </span>
+
+          <% if (n.item_image) { %>
+            <img class="notif-thumb" src="<%= n.item_image %>" alt="" loading="lazy">
+          <% } %>
+
+          <% if (!n.is_read) { %>
+            <span class="notif-dot" aria-hidden="true"></span>
+          <% } %>
+        </a>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <div class="notif-empty">
+      <span class="notif-empty-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+      </span>
+      <p><%= filter === "unread" ? "No unread notifications. You're all caught up!" : "You have no notifications yet." %></p>
+    </div>
+  <% } %>
+</main>
+
+<%- include("../partials/foot") %>

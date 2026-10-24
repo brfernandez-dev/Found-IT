@@ -1,0 +1,499 @@
+
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<%- include('../partials/flash') %>
+
+<%# profile-* styles live under .student-area (variables + rules), so the page opts in %>
+<main class="section campus-interior-section profile-page student-area">
+  <div class="container">
+
+    <!-- Profile heading -->
+    <header class="profile-welcome">
+      <div>
+        <span class="profile-overline">CSPC · STAFF ACCOUNT</span>
+        <h1>My Profile</h1>
+        <p>Manage your account and keep track of your lost and found reports.</p>
+      </div>
+      
+    </header>
+
+    <!-- Profile identity -->
+    <section class="profile-identity profile-panel" aria-labelledby="profile-name">
+      <div class="profile-avatar-wrap">
+        <% if (profile.profile_image) { %>
+          <img
+            class="profile-avatar-large"
+            src="<%= profile.profile_image %>"
+            alt="Profile picture of <%= profile.display_name %>"
+          >
+        <% } else { %>
+          <div class="profile-avatar-large profile-avatar-initial" aria-hidden="true">
+            <%= (profile.display_name || 'U').charAt(0).toUpperCase() %>
+          </div>
+        <% } %>
+        <span class="profile-avatar-online" title="Account active"></span>
+      </div>
+
+      <div class="profile-identity-copy">
+        <span class="profile-overline">YOUR ACCOUNT</span>
+        <h2 id="profile-name"><%= profile.display_name %></h2>
+        <p class="profile-email"><%= profile.email %></p>
+        <div class="profile-identity-meta">
+          <span class="profile-meta-chip">
+            <span aria-hidden="true">●</span>
+            <%= profile.role === 'staff' ? 'Campus Staff' : 'Campus Student' %>
+          </span>
+          <span class="profile-meta-chip">
+            <span aria-hidden="true">✓</span> Active account
+          </span>
+        </div>
+      </div>
+
+      <div class="profile-identity-actions">
+        <button
+          class="btn btn-primary"
+          type="button"
+          data-profile-settings-toggle
+          aria-expanded="false"
+          aria-controls="profile-settings"
+        >
+          Edit profile
+        </button>
+      </div>
+    </section>
+
+    <!-- Activity statistics -->
+    <section class="profile-stats" aria-label="Your report statistics">
+      <article class="profile-stat-card profile-stat-total">
+        <span class="profile-stat-icon" aria-hidden="true">▤</span>
+        <div>
+          <span class="profile-stat-label">Total reports</span>
+          <strong><%= Number(activity.total || 0) %></strong>
+          <span class="profile-stat-caption">All your reports</span>
+        </div>
+      </article>
+
+      <article class="profile-stat-card profile-stat-lost">
+        <span class="profile-stat-icon" aria-hidden="true">⌕</span>
+        <div>
+          <span class="profile-stat-label">Lost items</span>
+          <strong><%= Number(activity.lost || 0) %></strong>
+          <span class="profile-stat-caption">Items you reported lost</span>
+        </div>
+      </article>
+
+      <article class="profile-stat-card profile-stat-found">
+        <span class="profile-stat-icon" aria-hidden="true">✓</span>
+        <div>
+          <span class="profile-stat-label">Found items</span>
+          <strong><%= Number(activity.found || 0) %></strong>
+          <span class="profile-stat-caption">Items you reported found</span>
+        </div>
+      </article>
+
+      <article class="profile-stat-card profile-stat-returned">
+        <span class="profile-stat-icon" aria-hidden="true">↗</span>
+        <div>
+          <span class="profile-stat-label">Items returned</span>
+          <strong><%= Number(activity.returned || 0) %></strong>
+          <span class="profile-stat-caption">Marked as returned</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- Account information -->
+    <section class="profile-section profile-panel" aria-labelledby="account-details-title">
+      <div class="profile-section-heading">
+        <div>
+          <span class="profile-overline">PERSONAL INFORMATION</span>
+          <h2 id="account-details-title">Account details</h2>
+          <p>Review the information connected to your account.</p>
+        </div>
+        
+
+      <dl class="profile-details">
+        <div class="profile-detail-item">
+          <dt>Full name</dt>
+          <dd><%= profile.display_name %></dd>
+        </div>
+        <div class="profile-detail-item">
+          <dt>Email address</dt>
+          <dd><%= profile.email %></dd>
+        </div>
+        <div class="profile-detail-item">
+          <dt>Account type</dt>
+          <dd><%= profile.role === 'staff' ? 'Campus Staff' : 'Student' %></dd>
+        </div>
+        <div class="profile-detail-item">
+          <dt>Member since</dt>
+          <dd>
+            <%= profile.created_at
+              ? new Date(profile.created_at).toLocaleDateString(undefined, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })
+              : 'Not available'
+            %>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- Profile settings -->
+    <section
+      class="profile-section profile-panel profile-settings-section"
+      id="profile-settings"
+      aria-labelledby="profile-settings-title"
+      hidden
+    >
+      <div class="profile-section-heading">
+        <div>
+          <span class="profile-overline">ACCOUNT PREFERENCES</span>
+          <h2 id="profile-settings-title">Profile settings</h2>
+          <p>Update your details, picture, password, and appearance.</p>
+        </div>
+        <button
+          type="button"
+          class="profile-text-button"
+          data-profile-settings-toggle
+          aria-expanded="true"
+          aria-controls="profile-settings"
+        >
+          Close settings <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <div class="profile-settings-grid">
+
+        <!-- Personal details -->
+        <article class="profile-settings-card">
+          <div class="profile-card-heading">
+            <span class="profile-card-icon" aria-hidden="true">♙</span>
+            <div>
+              <h3>Personal details</h3>
+              <p>Update the name displayed on your account.</p>
+            </div>
+          </div>
+
+          <form method="post" action="/profile" class="profile-form">
+            <label for="profileDisplayName">Full name</label>
+            <input
+              id="profileDisplayName"
+              name="displayName"
+              type="text"
+              value="<%= profile.display_name %>"
+              minlength="2"
+              maxlength="100"
+              autocomplete="name"
+              required
+            >
+
+            <label for="profileEmail">Email address</label>
+            <input
+              id="profileEmail"
+              type="email"
+              value="<%= profile.email %>"
+              disabled
+            >
+            <p class="profile-help-text">Your email is used to sign in and cannot be changed here.</p>
+
+            <button class="btn btn-primary" type="submit">Save changes</button>
+          </form>
+        </article>
+
+        <!-- Profile picture -->
+        <article class="profile-settings-card">
+          <div class="profile-card-heading">
+            <span class="profile-card-icon" aria-hidden="true">▧</span>
+            <div>
+              <h3>Profile picture</h3>
+              <p>Choose a picture so you can identify your account easily.</p>
+            </div>
+          </div>
+
+          <form
+            method="post"
+            action="/profile/photo"
+            enctype="multipart/form-data"
+            class="profile-form"
+          >
+            <div class="profile-picture-preview">
+              <% if (profile.profile_image) { %>
+                <img
+                  data-profile-image-preview
+                  src="<%= profile.profile_image %>"
+                  alt="Profile picture preview"
+                >
+              <% } else { %>
+                <div data-profile-image-placeholder>
+                  <%= (profile.display_name || 'U').charAt(0).toUpperCase() %>
+                </div>
+                <img data-profile-image-preview alt="New profile picture preview" hidden>
+              <% } %>
+            </div>
+
+            <label for="profilePicture">Choose an image</label>
+            <input
+              id="profilePicture"
+              name="profilePicture"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              data-profile-image-input
+              required
+            >
+
+            <p class="profile-help-text">PNG, JPG, or WEBP. Maximum size: 5 MB.</p>
+            <button class="btn btn-primary" type="submit">Upload picture</button>
+          </form>
+
+          <% if (profile.profile_image) { %>
+            <form
+              method="post"
+              action="/profile/photo/remove"
+              class="profile-remove-picture-form"
+              data-confirm="Remove your current profile picture?"
+            >
+              <button class="btn btn-ghost" type="submit">Remove picture</button>
+            </form>
+          <% } %>
+        </article>
+
+        <!-- Password -->
+        <article class="profile-settings-card">
+          <div class="profile-card-heading">
+            <span class="profile-card-icon" aria-hidden="true">⌑</span>
+            <div>
+              <h3>Change password</h3>
+              <p>Keep your account secure with a strong password.</p>
+            </div>
+          </div>
+
+          <form method="post" action="/profile/password" class="profile-form" data-password-form>
+            <label for="currentPassword">Current password</label>
+            <input
+              id="currentPassword"
+              name="currentPassword"
+              type="password"
+              autocomplete="current-password"
+              required
+            >
+
+            <label for="newPassword">New password</label>
+            <input
+              id="newPassword"
+              name="newPassword"
+              type="password"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            >
+
+            <label for="confirmPassword">Confirm new password</label>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            >
+
+            <p class="profile-help-text">Use at least 8 characters. Your current password is required.</p>
+            <p class="profile-inline-error" data-password-error hidden></p>
+
+            <button class="btn btn-primary" type="submit">Update password</button>
+          </form>
+        </article>
+
+        <!-- Appearance -->
+        <article class="profile-settings-card">
+          <div class="profile-card-heading">
+            <span class="profile-card-icon" aria-hidden="true">◐</span>
+            <div>
+              <h3>Appearance</h3>
+              <p>Adjust the look of Found IT! on this device.</p>
+            </div>
+          </div>
+
+          <div class="profile-appearance-row">
+            <div>
+              <strong>Dark mode</strong>
+              <p>Use a darker theme in low-light settings.</p>
+            </div>
+            <label class="switch profile-theme-switch">
+              <input type="checkbox" data-theme-toggle aria-label="Toggle dark mode">
+              <span class="switch-track" aria-hidden="true"></span>
+              <span class="switch-thumb" aria-hidden="true"></span>
+            </label>
+          </div>
+
+          <p class="profile-help-text">Your appearance preference is saved in this browser.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Recent reports -->
+    <section class="profile-section profile-panel profile-reports" aria-labelledby="recent-reports-title">
+      <div class="profile-section-heading profile-reports-heading">
+        <div>
+          <span class="profile-overline">YOUR CONTRIBUTIONS</span>
+          <h2 id="recent-reports-title">Recent reports</h2>
+          <p>Search and review the lost and found items you have posted.</p>
+        </div>
+        <a class="btn btn-primary" href="/items/new">＋ New report</a>
+      </div>
+
+      <% if (!reports || reports.length === 0) { %>
+        <div class="profile-empty">
+          <div class="profile-empty-icon" aria-hidden="true">▤</div>
+          <h3>No reports yet</h3>
+          <p>Your lost and found reports will appear here after you post them.</p>
+          <a class="btn btn-primary" href="/items/new">Create your first report</a>
+        </div>
+      <% } else { %>
+
+        <!-- Search and filters -->
+        <div class="profile-report-toolbar">
+          <div class="profile-report-search">
+            <label for="reportSearch">Search your reports</label>
+            <div class="profile-search-input-wrap">
+              <span aria-hidden="true">⌕</span>
+              <input
+                id="reportSearch"
+                type="search"
+                placeholder="Search title, location, or reference..."
+                autocomplete="off"
+                data-report-search
+              >
+            </div>
+          </div>
+
+          <div class="profile-report-filter">
+            <label for="reportTypeFilter">Report type</label>
+            <select id="reportTypeFilter" data-report-type-filter>
+              <option value="all">All types</option>
+              <option value="lost">Lost items</option>
+              <option value="found">Found items</option>
+            </select>
+          </div>
+
+          <div class="profile-report-filter">
+            <label for="reportStatusFilter">Status</label>
+            <select id="reportStatusFilter" data-report-status-filter>
+              <option value="all">All statuses</option>
+              <option value="unclaimed">Unclaimed</option>
+              <option value="claim_pending">Claim pending</option>
+              <option value="claimed">Claimed</option>
+              <option value="returned">Returned</option>
+            </select>
+          </div>
+
+          <div class="profile-report-filter">
+            <label for="reportSort">Sort by</label>
+            <select id="reportSort" data-report-sort>
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="title">Title A–Z</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="profile-report-summary">
+          <span data-report-results><%= reports.length %> recent report<%= reports.length === 1 ? '' : 's' %></span>
+          <button type="button" class="profile-reset-filters" data-report-reset>Reset filters</button>
+        </div>
+
+        <div class="profile-table-wrap">
+          <table class="profile-report-table">
+            <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Type</th>
+                <th scope="col">Location</th>
+                <th scope="col">Status</th>
+                <th scope="col">Date posted</th>
+                <th scope="col"><span class="profile-sr-only">Open report</span>Action</th>
+              </tr>
+            </thead>
+            <tbody data-report-table>
+              <% reports.forEach(function (report) {
+                const reportType = String(report.type || '').toLowerCase();
+                const reportStatus = String(report.status || 'unclaimed').toLowerCase();
+                const reportTitle = report.title || 'Untitled report';
+                const reportLocation = report.location || 'Location not specified';
+                const reportDate = report.date_reported || report.created_at;
+                const reportDateValue = reportDate ? new Date(reportDate).getTime() : 0;
+              %>
+                <tr
+                  data-report-row
+                  data-type="<%= reportType %>"
+                  data-status="<%= reportStatus %>"
+                  data-title="<%= reportTitle.toLowerCase() %>"
+                  data-location="<%= reportLocation.toLowerCase() %>"
+                  data-reference="<%= report.reference_no || '' %>"
+                  data-date="<%= reportDateValue %>"
+                >
+                  <td>
+                    <div class="profile-table-item">
+                      <span class="profile-report-type profile-report-type-<%= reportType %>" aria-hidden="true">
+                        <%= reportType === 'lost' ? 'L' : 'F' %>
+                      </span>
+                      <div class="profile-table-item-copy">
+                        <a href="/items/<%= report.id %>" class="profile-table-item-title">
+                          <%= reportTitle %>
+                        </a>
+                        <span class="profile-table-reference">
+                          <%= report.reference_no || ('Report #' + report.id) %>
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="profile-type-label profile-type-label-<%= reportType %>">
+                      <%= reportType === 'lost' ? 'Lost item' : 'Found item' %>
+                    </span>
+                  </td>
+                  <td class="profile-table-location"><%= reportLocation %></td>
+                  <td>
+                    <span class="profile-status-pill profile-status-<%= reportStatus.replace(/[^a-z_]/g, '') %>">
+                      <%= report.approval_status === 'pending' ? 'Awaiting approval' : report.approval_status === 'rejected' ? 'Rejected' : statusLabel(reportStatus) %>
+                    </span>
+                  </td>
+                  <td class="profile-table-date">
+                    <%= reportDate
+                      ? new Date(reportDate).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })
+                      : '—'
+                    %>
+                  </td>
+                  <td>
+                    <a class="profile-open-report" href="/items/<%= report.id %>" aria-label="View <%= reportTitle %>">
+                      View <span aria-hidden="true">→</span>
+                    </a>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="profile-report-no-results" data-report-no-results hidden>
+          <strong>No matching reports</strong>
+          <p>Try another keyword or reset your filters.</p>
+          <button type="button" class="btn btn-ghost" data-report-reset>Reset filters</button>
+        </div>
+
+        <p class="profile-table-note">
+          This section displays your five most recent reports. Open a report to view its details and timeline.
+        </p>
+      <% } %>
+    </section>
+
+  </div>
+</main>
+
+<%- include('../partials/foot') %>

@@ -1,0 +1,19 @@
+/* Admin Campus Board only. This file is independent from all student styles. */
+.admin-page .admin-stats {
+  margin-bottom: 26px;
+}
+.admin-page .admin-filters {
+  margin-bottom: 26px;
+}
+.admin-page .admin-list-heading {
+  margin-top: 8px;
+}
+.admin-page .admin-table-wrap {
+  border-radius: 12px;
+}
+.admin-page .admin-table tbody tr:hover {
+  background: #f4f9fe;
+}
+.admin-page .admin-report-title {
+  font-weight: 700;
+}

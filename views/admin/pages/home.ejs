@@ -1,0 +1,105 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<%- include('../partials/flash') %>
+
+<section class="campus-hero">
+  <div class="campus-hero-photo" aria-hidden="true"></div>
+  <div class="campus-hero-shade" aria-hidden="true"></div>
+  <div class="container campus-hero-content">
+    <div class="campus-hero-copy">
+      <span class="campus-eyebrow"><span class="campus-live-dot"></span> CSPC · NABUA CAMPUS</span>
+      <% if (currentUser) { %>
+  <p class="campus-greeting">
+    Welcome back, <%= currentUser.displayName %>
+  </p>
+<% } %>
+
+<h1 class="campus-hero-changing-text" aria-live="polite">
+  Your campus, connected.
+</h1>
+
+<p class="campus-hero-sub">
+  The CSPC community's shared place to report and find belongings around campus.
+</p>
+
+      <div class="campus-hero-actions">
+        <% if (currentUser) { %>
+          <a class="btn btn-campus-gold" href="/items/new">Report an item <span aria-hidden="true">→</span></a>
+        <% } else { %>
+          <a class="btn btn-campus-gold" href="/login">Sign in to Found IT! <span aria-hidden="true">→</span></a>
+        <% } %>
+        <a class="btn btn-campus-outline" href="/items">Browse campus board</a>
+      </div>
+    </div>
+    <div class="campus-hero-note">
+      <img src="/images/cspc-logo.png" alt="" class="campus-hero-logo">
+      <div><strong>One campus community</strong><span>Verified CSPC members helping one another.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section campus-section">
+  <div class="container campus-content">
+    <div class="search-bar">
+      <div class="search-intro">
+        <span class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.2 4.2"></path></svg></span>
+        <div>
+          <strong>Search the campus board</strong>
+          <span>Look up an item, category, or campus location</span>
+        </div>
+      </div>
+      <form method="get" action="/items" class="search-form">
+        <input type="search" name="q" placeholder="Try “ID card” or “library”" aria-label="Search">
+        <select name="type" aria-label="Type">
+          <option value="">All items</option>
+          <option value="lost">Lost items</option>
+          <option value="found">Found items</option>
+        </select>
+        <button class="btn btn-primary" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="section campus-section">
+  <div class="container campus-content">
+    <%- include('../partials/online-users') %>
+  </div>
+</section>
+
+<section class="section campus-section">
+  <div class="container campus-content">
+    <span class="pill pill-sm">CAMPUS COMMUNITY</span>
+    <div class="section-head">
+      <div><h2>Recent campus reports</h2><p class="muted">The latest items shared by the CSPC community.</p></div>
+      <a class="btn btn-link" href="/items">View campus board →</a>
+    </div>
+    <div class="recent-grid">
+      <% if (!items || !items.length) { %>
+        <p class="empty">No reports yet. <% if (currentUser) { %><a href="/items/new">Add the first campus report</a>.<% } else { %><a href="/login">Sign in</a> to share the first campus report.<% } %></p>
+      <% } else { items.slice(0,4).forEach(item => { %>
+        <a class="item-card" href="/items/<%= item.id %>">
+          <div class="item-thumb item-thumb-<%= item.type %> home-item-visual">
+            <% if (item.image_url) { %>
+              <img src="<%= item.image_url %>" alt="Photo of <%= item.title %>" loading="lazy">
+            <% } else { %>
+              <span class="home-no-photo" aria-hidden="true"><%= item.type === 'lost' ? '⌕' : '✓' %></span>
+              <span class="home-no-photo-label">No photo available</span>
+            <% } %>
+          </div>
+          <div class="item-body">
+            <span class="tag tag-<%= item.status %>"><%= statusLabel(item.status) %></span>
+            <h3><%= item.title %></h3>
+            <p class="muted"><%= item.location %></p>
+            <p class="item-poster-line">Posted by <strong><%= currentUser ? (item.reporter_name || 'A student') : 'a CSPC member' %></strong></p>
+          </div>
+        </a>
+      <% }); } %>
+    </div>
+  </div>
+</section>
+
+
+
+
+<%- include('../partials/foot') %>
