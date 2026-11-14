@@ -949,7 +949,7 @@
               <% if (event.event_type === 'reported') { %>✓<% } else if (event.event_type === 'claim_submitted') { %>…<% } else if (event.event_type === 'claim_approved') { %>✓<% } else if (event.event_type === 'claim_rejected') { %>×<% } else if (event.event_type === 'found_linked') { %>↗<% } else { %>•<% } %>
             </span>
             <div class="timeline-copy">
-              <strong><%= event.event_type === 'reported' ? 'Report posted' : event.event_type === 'claim_submitted' ? 'Claim submitted' : event.event_type === 'claim_approved' ? 'Claim approved' : event.event_type === 'report_approved' ? 'Report approved' : event.event_type === 'report_rejected' ? 'Report not approved' : event.event_type === 'claim_rejected' ? 'Claim not approved' : event.event_type === 'found_linked' ? 'Found report linked' : 'Report updated' %></strong>
+              <strong><%= event.event_type === 'reported' ? 'Report posted' : event.event_type === 'claim_submitted' ? 'Claim submitted' : event.event_type === 'claim_approved' ? 'Claim approved' : event.event_type === 'report_approved' ? 'Report approved' : event.event_type === 'report_rejected' ? 'Report not approved' : event.event_type === 'claim_rejected' ? 'Claim not approved' : event.event_type === 'found_linked' ? 'Found report linked' : event.event_type === 'withdrawn' ? 'Report withdrawn' : 'Report updated' %></strong>
               <p><%= event.message %></p>
               <time datetime="<%= new Date(event.created_at).toISOString() %>"><%= new Date(event.created_at).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) %><%= event.actor_name ? ' · ' + event.actor_name : '' %></time>
             </div>

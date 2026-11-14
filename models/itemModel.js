@@ -395,6 +395,64 @@ async function updateStatus(id, status, actorId = null) {
   });
 }
 
+// The owner of a LOST report withdraws it because the item was found.
+// The report is moved to Trash (staff can still see it for 30 days, as with
+// other removed reports), so it leaves the campus board right away.
+// Returns { title, finderIds } so the route can notify the people involved.
+async function withdrawLostReport(id, userId) {
+  return withTransaction(async (conn) => {
+    const [rows] = await conn.execute(
+      `SELECT id, item_type, item_name, reporter_id, trashed_at
+       FROM items WHERE id = ? FOR UPDATE`,
+      [id],
+    );
+
+    const item = rows[0];
+
+    if (!item) {
+      throw new UserError("Report not found.", 404);
+    }
+
+    if (item.item_type !== "lost") {
+      throw new UserError("Only a lost-item report can be withdrawn.");
+    }
+
+    if (
+      item.reporter_id === null ||
+      String(item.reporter_id) !== String(userId)
+    ) {
+      throw new UserError("Only the person who posted this report can withdraw it.", 403);
+    }
+
+    if (item.trashed_at) {
+      throw new UserError("This report was already withdrawn.");
+    }
+
+    await conn.execute(`UPDATE items SET trashed_at = NOW() WHERE id = ?`, [id]);
+
+    await addTimelineEvent(
+      id,
+      "withdrawn",
+      "The owner withdrew this report because the item was found.",
+      userId,
+      conn,
+    );
+
+    // Finders who sent an "I found this item" report for this lost report.
+    const [finders] = await conn.execute(
+      `SELECT DISTINCT reporter_id FROM items
+       WHERE related_item_id = ? AND item_type = 'found'
+       AND trashed_at IS NULL AND reporter_id IS NOT NULL AND reporter_id <> ?`,
+      [id, userId],
+    );
+
+    return {
+      title: item.item_name,
+      finderIds: finders.map((row) => row.reporter_id),
+    };
+  });
+}
+
 // Delete an item report
 async function remove(id) {
   const [result] = await pool.execute(`DELETE FROM items WHERE id = ?`, [id]);
@@ -984,6 +1042,7 @@ module.exports = {
   create,
   createFoundFromLost,
   updateStatus,
+  withdrawLostReport,
   remove,
   counts,
   listByReporter,

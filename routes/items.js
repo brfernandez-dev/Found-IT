@@ -845,6 +845,55 @@ router.post(
   },
 );
 
+// Withdraw a lost report because the item was found
+router.post("/:id(\\d+)/withdraw", requireLogin, async (req, res, next) => {
+  const itemId = Number(req.params.id);
+
+  try {
+    const user = req.session.user;
+    const item = await itemModel.findById(itemId);
+
+    if (!item) {
+      return res.status(404).render("errors/404", { title: "Not found" });
+    }
+
+    if (item.type !== "lost" || !isReporterOfItem(item, user.id)) {
+      return res.status(403).render("errors/403", { title: "Forbidden" });
+    }
+
+    const result = await itemModel.withdrawLostReport(itemId, user.id);
+
+    // Tell staff, and any finder who already sent a report for this item.
+    await notificationModel.notifyStaff(
+      user.displayName + " withdrew their lost report: " + result.title,
+      itemId,
+      null,
+      user.id,
+    );
+
+    for (const finderId of result.finderIds) {
+      await notificationModel.createNotification(
+        finderId,
+        "The owner withdrew the lost report you responded to: " + result.title,
+        itemId,
+        null,
+        user.id,
+      );
+    }
+
+    req.flash(
+      "success",
+      "Your lost report was withdrawn. Glad you got your item back!",
+    );
+
+    return res.redirect(303, "/items");
+  } catch (err) {
+    return flashOrThrow(req, err, next, () =>
+      res.redirect(303, `/items/${itemId}`),
+    );
+  }
+});
+
 // Delete an item report
 router.post("/:id(\\d+)/delete", requireLogin, async (req, res, next) => {
   try {
